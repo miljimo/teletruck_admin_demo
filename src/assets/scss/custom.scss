@@ -1,0 +1,162 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap");
+@import "bootstrapUtil.scss";
+$primary: #ed6fab;
+
+body,
+html {
+  p,
+  span,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  button,
+  label,
+  .nav-link,
+  input,
+  .copyright {
+    font-family: "Noto Sans", sans-serif;
+  }
+}
+
+.mapcard {
+  div {
+    .vx-card__body {
+      height: 409px !important;
+    }
+  }
+}
+
+.piechartheight {
+  height: 200px !important;
+}
+
+.vs-popup--title {
+  h3 {
+    padding: 24px !important;
+  }
+}
+
+.logowidth {
+  width: 120px;
+}
+
+.walletinfocard {
+  border: 2px solid #dcdcdc61;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.tokenpointer {
+  background: #e8e8e8;
+  font-size: 11px;
+  padding: 5px 13px;
+  border-radius: 23px;
+  cursor: pointer;
+}
+
+.passwordPopup {
+  .vs-popup {
+    max-width: 315px !important;
+  }
+}
+
+.vs-sidebar {
+  border-right: 3px solid $primary;
+}
+.paymentstats {
+  font-size: 10px;
+  display: inline-block;
+  border-radius: 2px;
+  padding: 5px 4px;
+}
+.p-made {
+  background: #29c76f;
+  color: white;
+}
+.p-pending {
+  background: #ff9f43;
+  color: white;
+}
+.loading-logo {
+  left: calc(50% - 36px) !important;
+}
+.d-inline {
+  display: inline-block;
+}
+.lead {
+  font-size: 14px;
+}
+.text-small {
+  font-size: 12px;
+}
+.smEditor {
+  .ql-toolbar {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .ql-container {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    .ql-editor {
+      min-height: 100px !important;
+    }
+  }
+}
+
+.loader-16 {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(0deg, rgba(255, 61, 0, 0.2) 33%, $primary 100%);
+  -webkit-animation: rotation 1s linear infinite;
+  animation: rotation 1s linear infinite;
+}
+.loader-16:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f8f8f8;
+}
+.justify-content-center {
+  justify-content: center;
+}
+.userSidebar {
+  .vs-sidebar--background {
+    z-index: 99999 !important;
+  }
+  .vs-sidebar {
+    z-index: 99999 !important;
+  }
+}
+.opacity-3 {
+  opacity: 0.3;
+}
+/* keyFrames */
+@-webkit-keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
