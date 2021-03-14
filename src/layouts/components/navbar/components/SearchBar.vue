@@ -14,7 +14,7 @@
         class="w-full"
         inputClassses="w-full vs-input-no-border vs-input-no-shdow-focus"
         icon="SearchIcon"
-        placeholder="Search on Baby Diary"
+        placeholder="Search"
         @input="hnd_search_query_update"
         @selected="selected"
         @closeSearchbar="showFullSearch = false"

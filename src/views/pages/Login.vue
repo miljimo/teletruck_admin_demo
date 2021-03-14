@@ -102,8 +102,9 @@ export default {
                 icon: "verified_user",
                 position: "bottom-center",
               });
-              let token = resp.data.data.token;
-              let user = JSON.stringify(resp.data.data);
+
+              let token = resp.data.data.token.access_token;
+              let user = JSON.stringify(resp.data.data.user);
 
               token = this.CryptoJS.AES.encrypt(
                 token,

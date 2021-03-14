@@ -3,9 +3,7 @@
     <p>
       <span>Copyright &copy;</span>
       <span class="mr-1">{{ new Date().getFullYear() }}</span>
-      <a href="http://babydiary.ng/" target="_blank" rel="nofollow"
-        >Baby Diary</a
-      >
+      <a href="$" target="_blank" rel="nofollow">Teletruck</a>
       <span class="hidden sm:inline-block">, All rights Reserved</span>
     </p>
     <span class="md:flex hidden items-center">

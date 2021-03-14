@@ -1,3 +1,3 @@
 <template>
-  <img class="w-3/5" src="/bdlogo.svg" alt />
+  <img class="w-4/5" src="/bdlogo.svg" alt />
 </template>

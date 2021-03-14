@@ -1,7 +1,7 @@
 <template>
   <div class="parentx">
     <vs-sidebar
-      class="v-nav-menu items-no-padding"
+      class="v-nav-menu items-no-padding siteSidebar"
       v-model="isVerticalNavMenuActive"
       ref="verticalNavMenu"
       default-index="-1"
@@ -53,7 +53,7 @@
                 id="btnVNavMenuMinToggler"
                 class="mr-0 cursor-pointer"
                 :icon="reduce ? 'CircleIcon' : 'DiscIcon'"
-                svg-classes="stroke-current text-primary"
+                svg-classes="stroke-current text-dark"
                 @click="toggleReduce(!reduce)"
               />
             </template>
