@@ -9,156 +9,77 @@
       <div class="col-md-4 col-8">
         <div class="text-right">
           <vs-button color="dark" class="ml-5" type="border">Disable</vs-button>
-          <vs-button
-            @click="addData = true"
-            color="dark"
-            class="ml-5"
-            type="filled"
-            >Edit profile</vs-button
-          >
         </div>
       </div>
     </div>
 
     <div class="mt-5">
-      <div class="row mb-10" style="align-items: center">
-        <div class="col-3 col-md-2">
-          <vs-avatar
-            size="150px"
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
-        </div>
-        <div class="col-9 col-md-10">
-          <h2 class="mb-2">Kareem Salami</h2>
-          <p class="">
-            <a
-              class="text-underline text-black font-light text-small"
-              href="mailto:"
-              >horpeyeureka@gmail.com</a
-            >
-          </p>
-          <p class="">
-            <a
-              class="text-underline text-black font-light text-small"
-              href="tel:"
-              >+234 8117293921</a
-            >
-          </p>
-        </div>
-      </div>
       <div class="row">
-        <div class="col-md-3">
-          <vs-card>
+        <div class="col-md-4">
+          <vs-card style="min-height: 508px">
             <div class="p-3">
-              <div class="row">
-                <div class="col-9">
-                  <h4 class="font-bold">23,423</h4>
-                  <p class="mt-3">Total Trips</p>
-                </div>
-                <div class="col-3">
-                  <h4>
-                    <feather-icon class="mr-1" icon="MapIcon" />
-                  </h4>
-                </div>
+              <div class="mb-3">
+                <p class="small font-light">Status</p>
+                <h5 class="text-success">Active</h5>
+              </div>
+              <div class="mb-3">
+                <p class="small font-light">Manager</p>
+                <h5 class="">Adeniran Opeyemi</h5>
+              </div>
+              <div class="mb-3">
+                <p class="small font-light">Plate number</p>
+                <h5 class="">CAT 232,JKD</h5>
               </div>
             </div>
           </vs-card>
         </div>
-        <div class="col-md-3">
-          <vs-card>
-            <div class="p-3">
-              <div class="row">
-                <div class="col-9">
-                  <h4 class="font-bold">23,423</h4>
-                  <p class="mt-3">Total Trips</p>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-6">
+              <vs-card>
+                <div class="p-3">
+                  <div class="row">
+                    <div class="col-9">
+                      <h4 class="font-bold">Flatbed Truck</h4>
+                      <h5 class="mt-3 text-dark opacity-25">CAT 232,JKD</h5>
+                    </div>
+                    <div class="col-3">
+                      <h4>
+                        <feather-icon class="mr-1" icon="TrucksIcon" />
+                      </h4>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-3">
-                  <h4>
-                    <feather-icon class="mr-1" icon="TruckIcon" />
-                  </h4>
-                </div>
-              </div>
+              </vs-card>
             </div>
-          </vs-card>
+            <div class="col-md-6">
+              <vs-card>
+                <div class="p-3">
+                  <div class="row">
+                    <div class="col-9">
+                      <h4 class="font-bold">23,423</h4>
+                      <h5 class="mt-3 text-dark opacity-25">CAT 232,JKD</h5>
+                    </div>
+                    <div class="col-3">
+                      <h4>
+                        <feather-icon class="mr-1" icon="MapIcon" />
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              </vs-card>
+            </div>
+          </div>
+          <div>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3939.9944775463873!2d7.458752914511664!3d9.064266490932008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0bc943465bef%3A0x94709b329ba7b9fb!2sThe%20Food%20factory%20Express!5e0!3m2!1sen!2sng!4v1616352085157!5m2!1sen!2sng"
+              height="400"
+              style="border: 0; width: 100%"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
         </div>
-      </div>
-
-      <div class="p-2">
-        <div class="mb-4">
-          <p class="font-bold lead">All trucks ({{ contents.totalRecord }})</p>
-        </div>
-
-        <vs-table
-          id="div-with-loading"
-          max-items="10"
-          :data="contents.records"
-          search
-        >
-          <template slot="thead">
-            <vs-th> Title </vs-th>
-            <vs-th> Truck type </vs-th>
-            <vs-th> Status </vs-th>
-            <vs-th> Plate number </vs-th>
-            <vs-th> Driver</vs-th>
-            <vs-th> Phone</vs-th>
-            <vs-th> Action </vs-th>
-          </template>
-
-          <template slot-scope="{ data }">
-            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td :data="data[indextr].title">
-                <router-link
-                  :to="`/view-content/${data[indextr].id}`"
-                  class="font-bold"
-                >
-                  {{ data[indextr].name }}</router-link
-                >
-              </vs-td>
-
-              <vs-td :data="data[indextr].synopsis">
-                <span class="text-small" v-html="data[indextr].synopsis"></span>
-              </vs-td>
-              <vs-td :data="data[indextr].pregnancy_week">
-                {{ data[indextr].pregnancy_week }} - Week
-              </vs-td>
-
-              <!-- <vs-td :data="data[indextr].synopsis">
-                  {{ data[indextr].synopsis }}
-                </vs-td> -->
-
-              <vs-td :data="data[indextr].id">
-                <p class="text-small">Published</p>
-                {{
-                  moment
-                    .utc(new Date(data[indextr].date_created))
-                    .format("dddd, MMM Do 'YY")
-                }}
-              </vs-td>
-
-              <vs-td>
-                <vs-button
-                  :to="`/edit-pregnancy-content/${data[indextr].id}`"
-                  size="small"
-                  class="mr-2 mb-2"
-                  >Edit</vs-button
-                >
-                <vs-button
-                  @click="deleteItem(data[indextr].id)"
-                  size="small"
-                  color="dark"
-                  >Delete</vs-button
-                >
-              </vs-td>
-            </vs-tr>
-          </template>
-        </vs-table>
-
-        <vs-pagination
-          v-if="contents"
-          class="mt-4"
-          :total="Math.ceil(contents.totalRecord / 10)"
-          v-model="table_options.current_page"
-        ></vs-pagination>
       </div>
     </div>
 

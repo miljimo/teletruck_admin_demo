@@ -42,6 +42,41 @@ const router = new Router({
           name: "view-profile",
           component: () => import("./views/ViewProfile.vue"),
         },
+        {
+          path: "/trucks",
+          name: "trucks",
+          component: () => import("./views/Trucks.vue"),
+        },
+        {
+          path: "/truck/:id",
+          name: "viewtruck",
+          component: () => import("./views/TruckView.vue"),
+        },
+        {
+          path: "/materials",
+          name: "materials",
+          component: () => import("./views/Materials.vue"),
+        },
+        {
+          path: "/material/:id",
+          name: "materialView",
+          component: () => import("./views/MaterialView.vue"),
+        },
+        {
+          path: "/wallet",
+          name: "wallet",
+          component: () => import("./views/Wallet.vue"),
+        },
+        {
+          path: "/invoices",
+          name: "invoices",
+          component: () => import("./views/Invoices.vue"),
+        },
+        {
+          path: "/profile",
+          name: "profile",
+          component: () => import("./views/Profile.vue"),
+        },
       ],
     },
     // =============================================================================

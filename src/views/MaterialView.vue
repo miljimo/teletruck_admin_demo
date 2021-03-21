@@ -14,78 +14,39 @@
             color="dark"
             class="ml-5"
             type="filled"
-            >Edit profile</vs-button
+            >Edit Material</vs-button
           >
         </div>
       </div>
     </div>
 
     <div class="mt-5">
-      <div class="row mb-10" style="align-items: center">
+      <div class="row mb-10">
         <div class="col-3 col-md-2">
           <vs-avatar
             size="150px"
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
+            src="https://geologyscience.com/wp-content/uploads/2019/06/Graphite2.jpg"
           />
         </div>
-        <div class="col-9 col-md-10">
-          <h2 class="mb-2">Kareem Salami</h2>
-          <p class="">
-            <a
-              class="text-underline text-black font-light text-small"
-              href="mailto:"
-              >horpeyeureka@gmail.com</a
-            >
+        <div class="col-9 col-md-6">
+          <h2 class="mb-3">Coarse Aggragates</h2>
+          <p class="font-light">
+            Broad category of coarse- to medium-grained particulate material
+            used in construction, including sand, gravel, crushed stone, slag,
+            recycled concrete and geosynthetic aggregates.
           </p>
-          <p class="">
-            <a
-              class="text-underline text-black font-light text-small"
-              href="tel:"
-              >+234 8117293921</a
-            >
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-3">
-          <vs-card>
-            <div class="p-3">
-              <div class="row">
-                <div class="col-9">
-                  <h4 class="font-bold">23,423</h4>
-                  <p class="mt-3">Total Trips</p>
-                </div>
-                <div class="col-3">
-                  <h4>
-                    <feather-icon class="mr-1" icon="MapIcon" />
-                  </h4>
-                </div>
-              </div>
-            </div>
-          </vs-card>
-        </div>
-        <div class="col-md-3">
-          <vs-card>
-            <div class="p-3">
-              <div class="row">
-                <div class="col-9">
-                  <h4 class="font-bold">23,423</h4>
-                  <p class="mt-3">Total Trips</p>
-                </div>
-                <div class="col-3">
-                  <h4>
-                    <feather-icon class="mr-1" icon="TruckIcon" />
-                  </h4>
-                </div>
-              </div>
-            </div>
-          </vs-card>
+          <div class="mt-5">
+            <p class="mb-2">Sizes</p>
+            <vs-chip class="mr-2"> 15mm Granite </vs-chip>
+            <vs-chip class="mr-2"> 10mm Granite </vs-chip>
+            <vs-chip class="mr-2"> 20mm Granite </vs-chip>
+          </div>
         </div>
       </div>
 
       <div class="p-2">
         <div class="mb-4">
-          <p class="font-bold lead">All trucks ({{ contents.totalRecord }})</p>
+          <p class="font-bold lead">All Orders ({{ contents.totalRecord }})</p>
         </div>
 
         <vs-table
@@ -95,13 +56,11 @@
           search
         >
           <template slot="thead">
-            <vs-th> Title </vs-th>
-            <vs-th> Truck type </vs-th>
+            <vs-th> Date </vs-th>
+            <vs-th> Client </vs-th>
             <vs-th> Status </vs-th>
-            <vs-th> Plate number </vs-th>
-            <vs-th> Driver</vs-th>
-            <vs-th> Phone</vs-th>
-            <vs-th> Action </vs-th>
+            <vs-th> Size</vs-th>
+            <vs-th> Amount</vs-th>
           </template>
 
           <template slot-scope="{ data }">

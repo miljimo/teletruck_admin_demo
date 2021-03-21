@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Companies (12)</h3>
+        <h3 class="font-bold d-inline">Invoices (12)</h3>
       </div>
       <div class="col-md-3 col-8">
         <div class="text-right">
@@ -31,10 +31,12 @@
             search
           >
             <template slot="thead">
-              <vs-th> Company name </vs-th>
-              <vs-th> Full name </vs-th>
-              <vs-th> Email address </vs-th>
-              <vs-th> Truck </vs-th>
+              <vs-th> Date </vs-th>
+              <vs-th> Invoice ID </vs-th>
+              <vs-th> Status </vs-th>
+              <vs-th> Client </vs-th>
+              <vs-th> Manager </vs-th>
+              <vs-th> Amount </vs-th>
               <vs-th> Action </vs-th>
             </template>
 
@@ -99,40 +101,45 @@
         </div>
       </vs-card>
     </div>
-    <vs-popup
-      class="addPopup"
-      title="Add manager profile"
-      :active.sync="addData"
-    >
+    <vs-popup class="addPopup" title="Add Truck" :active.sync="addData">
       <div>
         <form action="">
           <div class="my-3">
             <vs-input
               class="w-full"
-              placeholder="First name"
+              placeholder="Enter plate number"
               v-model="value1"
             />
           </div>
           <div class="my-3">
-            <vs-input class="w-full" placeholder="Last name" v-model="value1" />
-          </div>
-          <div class="my-3">
-            <vs-input
+            <vs-select
               class="w-full"
-              placeholder="Email address"
-              v-model="value1"
-            />
+              label="Select truck type"
+              v-model="select1"
+            >
+              <vs-select-item :value="'flatbed'" :text="'Flatbed'" />
+            </vs-select>
           </div>
+
           <div class="my-3">
-            <vs-input
+            <vs-select
               class="w-full"
-              placeholder="Phone number"
-              v-model="value1"
-            />
+              label="Select truck state"
+              v-model="select1"
+            >
+              <vs-select-item :value="'Goodmode'" :text="'Good mode'" />
+            </vs-select>
           </div>
+
+          <div class="my-3">
+            <vs-select class="w-full" label="Select manager" v-model="select1">
+              <vs-select-item :value="'kabiru'" :text="'Kabiru Salam'" />
+            </vs-select>
+          </div>
+
           <div class="mt-10">
             <vs-button color="dark" class="w-full my-3" type="filled"
-              >Add manager profile</vs-button
+              >Add truck</vs-button
             >
             <vs-button color="dark" class="w-full mb-2" type="flat"
               >Cancel</vs-button
@@ -156,6 +163,7 @@ export default {
   data() {
     return {
       contents: [],
+      trucktype: "",
       addData: false,
       table_options: {
         current_page: 1,
