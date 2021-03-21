@@ -33,9 +33,14 @@ const router = new Router({
           component: () => import("./views/Home.vue"),
         },
         {
-          path: "/pregnancy",
-          name: "pregnancy",
-          component: () => import("./views/Pregnancy.vue"),
+          path: "/companies",
+          name: "companies",
+          component: () => import("./views/Companies.vue"),
+        },
+        {
+          path: "/view-profile/:id",
+          name: "view-profile",
+          component: () => import("./views/ViewProfile.vue"),
         },
       ],
     },

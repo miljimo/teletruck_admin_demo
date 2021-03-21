@@ -1,42 +1,52 @@
 <template>
   <div v-if="!loading">
-    <h3 class="font-bold d-inline">All Videos</h3>
-    <vs-button to="/add-video" color="primary" class="ml-5" type="filled"
-      >Add New</vs-button
-    >
+    <div class="row">
+      <div class="col-md-9">
+        <h3 class="font-bold d-inline">Companies (12)</h3>
+      </div>
+      <div class="col-md-3">
+        <div class="text-right">
+          <vs-button
+            @click="addData = true"
+            color="dark"
+            class="ml-5"
+            type="filled"
+            >Add New</vs-button
+          >
+        </div>
+      </div>
+    </div>
+
     <div class="mt-5">
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead" v-if="videos.pagination">
-              All ({{ videos.pagination.total_record }})
-            </p>
+            <p class="font-bold lead">All ({{ contents.totalRecord }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="videos.records"
+            :data="contents.records"
             search
           >
             <template slot="thead">
-              <vs-th> Title </vs-th>
-
-              <vs-th> Synopsis </vs-th>
-              <!-- <vs-th> Tags </vs-th> -->
-              <vs-th> Date </vs-th>
+              <vs-th> Company name </vs-th>
+              <vs-th> Full name </vs-th>
+              <vs-th> Email address </vs-th>
+              <vs-th> Truck </vs-th>
               <vs-th> Action </vs-th>
             </template>
 
             <template slot-scope="{ data }">
               <vs-tr :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td :data="data[indextr].title">
-                  <p
-                    @click="viewVideo(data[indextr])"
-                    class="font-bold text-primary cursor-pointer"
+                  <router-link
+                    :to="`/view-content/${data[indextr].id}`"
+                    class="font-bold"
                   >
-                    {{ data[indextr].name }}
-                  </p>
+                    {{ data[indextr].name }}</router-link
+                  >
                 </vs-td>
 
                 <vs-td :data="data[indextr].synopsis">
@@ -44,6 +54,9 @@
                     class="text-small"
                     v-html="data[indextr].synopsis"
                   ></span>
+                </vs-td>
+                <vs-td :data="data[indextr].pregnancy_week">
+                  {{ data[indextr].pregnancy_week }} - Week
                 </vs-td>
 
                 <!-- <vs-td :data="data[indextr].synopsis">
@@ -60,12 +73,12 @@
                 </vs-td>
 
                 <vs-td>
-                  <!-- <vs-button
-                    :to="`edit-blog/${data[indextr].id}`"
+                  <vs-button
+                    :to="`/edit-pregnancy-content/${data[indextr].id}`"
                     size="small"
                     class="mr-2 mb-2"
                     >Edit</vs-button
-                  > -->
+                  >
                   <vs-button
                     @click="deleteItem(data[indextr].id)"
                     size="small"
@@ -78,30 +91,56 @@
           </vs-table>
 
           <vs-pagination
-            v-if="videos.pagination"
+            v-if="contents"
             class="mt-4"
-            :total="Math.ceil(videos.pagination.total_record / 10)"
+            :total="Math.ceil(contents.totalRecord / 10)"
             v-model="table_options.current_page"
           ></vs-pagination>
         </div>
       </vs-card>
-
-      <vs-popup :title="videoContent.name" :active.sync="videoPopup">
-        <p class="text-small mb-2">
-          {{ moment.utc(videoContent.date_created).format("dddd, MMM Do 'YY") }}
-        </p>
-        <p>
-          <span v-html="videoContent.synopsis"></span>
-        </p>
-        <div class="my-10">
-          <youtube
-            style="width: 100%"
-            player-width="100%"
-            :video-id="viewPreviewID"
-          ></youtube>
-        </div>
-      </vs-popup>
     </div>
+    <vs-popup
+      class="addPopup"
+      title="Add manager profile"
+      :active.sync="addData"
+    >
+      <div>
+        <form action="">
+          <div class="my-3">
+            <vs-input
+              class="w-full"
+              placeholder="First name"
+              v-model="value1"
+            />
+          </div>
+          <div class="my-3">
+            <vs-input class="w-full" placeholder="Last name" v-model="value1" />
+          </div>
+          <div class="my-3">
+            <vs-input
+              class="w-full"
+              placeholder="Email address"
+              v-model="value1"
+            />
+          </div>
+          <div class="my-3">
+            <vs-input
+              class="w-full"
+              placeholder="Phone number"
+              v-model="value1"
+            />
+          </div>
+          <div class="mt-10">
+            <vs-button color="dark" class="w-full my-3" type="filled"
+              >Add manager profile</vs-button
+            >
+            <vs-button color="dark" class="w-full mb-2" type="flat"
+              >Cancel</vs-button
+            >
+          </div>
+        </form>
+      </div>
+    </vs-popup>
   </div>
 </template>
 <script>
@@ -116,10 +155,8 @@ export default {
   },
   data() {
     return {
-      videoPopup: false,
-      videoContent: {},
-      videos: [],
-      viewPreviewID: "",
+      contents: [],
+      addData: false,
       table_options: {
         current_page: 1,
       },
@@ -128,7 +165,7 @@ export default {
   },
   watch: {
     "table_options.current_page": function () {
-      this.getVideos(true);
+      this.getContents(true);
     },
   },
   methods: {
@@ -142,12 +179,6 @@ export default {
         accept: this.deleteFunc,
       });
     },
-    viewVideo(video) {
-      console.log(video);
-      this.videoPopup = true;
-      this.videoContent = video;
-      this.viewPreviewID = this.$youtube.getIdFromURL(video.embed_link);
-    },
     deleteFunc() {
       this.$vs.loading({
         container: "#div-with-loading",
@@ -155,18 +186,16 @@ export default {
       });
       let contID = this.delAct;
       this.$store
-        .dispatch("deleteVideo", contID)
+        .dispatch("delContent", contID)
         .then((resp) => {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
 
-          this.videos.records.splice(
-            this.videos.records.findIndex(function (i) {
+          this.contents.records.splice(
+            this.contents.records.findIndex(function (i) {
               return i.id === contID;
             }),
             1
           );
-
-          //   console.log(this.videos.records);
 
           this.$vs.notify({
             icon: "error",
@@ -198,27 +227,30 @@ export default {
         });
     },
     getBl() {
-      this.$store.commit("pgLoading", true);
-      this.getVideos(false);
+      //   this.$store.commit("pgLoading", true);
+      //   this.getContents(false);
     },
 
-    getVideos(divLoad) {
+    getContents(divLoad) {
       if (divLoad) {
         this.$vs.loading({
           container: "#div-with-loading",
           scale: 0.6,
         });
       }
-      let pageNo = this.table_options.current_page;
+      let fetch = {
+        type: "pregnancy",
+        pageNo: this.table_options.current_page,
+      };
+
       this.$store
-        .dispatch("getVideos", pageNo)
+        .dispatch("getContents", fetch)
         .then((resp) => {
-          this.videos = resp.data;
-          //   console.log(resp.data.data);
+          this.contents = resp.data.data;
+
           if (divLoad) {
             this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           }
-          this.videos = resp.data.data;
 
           this.$store.commit("pgLoading", false);
         })
@@ -226,7 +258,7 @@ export default {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           if (err.response) {
             this.$vs.notify({
-              title: "Get videos",
+              title: "Get Contents",
               text: err.response.data.message,
               color: "warning",
               icon: "error",
@@ -234,8 +266,8 @@ export default {
             });
           } else {
             this.$vs.notify({
-              title: "Get videos",
-              text: "Unable to get videos",
+              title: "Get Contents",
+              text: "Unable to get contents",
               color: "dark",
               icon: "error",
               position: "bottom-center",

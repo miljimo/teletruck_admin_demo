@@ -6,18 +6,17 @@
           <h1>Dashboard</h1>
           <vs-tabs class="mt-4">
             <vs-tab label="Total Wallet">
-              <vs-card class="my-4">
-                <div slot="header">
-                  <h3>Hello world !</h3>
-                </div>
+              <vs-card
+                class="my-4 p-4 bg-black"
+                style="
+                  background-image: url('/img/cardbg.svg');
+                  background-size: cover;
+                  background-position: center;
+                "
+              >
                 <div>
-                  <span
-                    >Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat.</span
-                  >
+                  <p class="mb-2 mt-5 text-white opacity-10">Total Wallet</p>
+                  <h3 class="font-bold mb-0 text-white">N6,390.68</h3>
                 </div>
               </vs-card>
             </vs-tab>

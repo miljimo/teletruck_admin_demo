@@ -157,6 +157,11 @@ html {
 .opacity-3 {
   opacity: 0.3;
 }
+
+.addPopup .vs-popup {
+  max-width: 400px !important;
+}
+
 /* keyFrames */
 @-webkit-keyframes rotation {
   0% {
