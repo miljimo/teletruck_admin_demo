@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;500;600;700&display=swap");
 @import "bootstrapUtil.scss";
-$primary: #FFD02F;
+$primary: #ffd02f;
 
 body,
 html {
@@ -18,7 +18,7 @@ html {
   .nav-link,
   input,
   .copyright {
-    font-family: "Noto Sans", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
   }
 }
 
@@ -67,18 +67,19 @@ html {
 .vs-sidebar {
   background-color: $primary;
 }
-.v-nav-menu .vs-sidebar--item a{
-  padding: 17px 20px!important;
+.v-nav-menu .vs-sidebar--item a {
+  padding: 17px 20px !important;
 }
-.v-nav-menu .vs-sidebar--item a,.v-nav-menu .feather-icon{
-  color: black!important;
+.v-nav-menu .vs-sidebar--item a,
+.v-nav-menu .feather-icon {
+  color: black !important;
 }
-.v-nav-menu .vs-sidebar--item .router-link-active{
-  background: rgba(0, 0, 0, 0.075)!important;
+.v-nav-menu .vs-sidebar--item .router-link-active {
+  background: rgba(0, 0, 0, 0.075) !important;
   color: black;
 }
-.v-nav-menu .vs-sidebar--item .router-link-active span{
-  color: black!important;
+.v-nav-menu .vs-sidebar--item .router-link-active span {
+  color: black !important;
 }
 .paymentstats {
   font-size: 10px;
