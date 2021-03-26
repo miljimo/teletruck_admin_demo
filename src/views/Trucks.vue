@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Trucks (12)</h3>
+        <h3 class="font-bold d-inline">Trucks</h3>
       </div>
       <div class="col-md-3 col-8">
         <div class="text-right">
@@ -21,63 +21,56 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.totalRecord }})</p>
+            <p class="font-bold lead">All ({{ contents.total }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.records"
+            :data="contents.data"
             search
           >
             <template slot="thead">
-              <vs-th> Title </vs-th>
+              <vs-th> Date Created </vs-th>
+              <vs-th> Name </vs-th>
               <vs-th> Truck type </vs-th>
               <vs-th> Plate number </vs-th>
-              <vs-th> Manager </vs-th>
+              <!-- <vs-th> Manager </vs-th> -->
               <vs-th> Action </vs-th>
             </template>
 
             <template slot-scope="{ data }">
               <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td :data="data[indextr].title">
+                <vs-td :data="data[indextr].id">
+                  {{
+                    moment
+                      .utc(new Date(data[indextr].created_at))
+                      .format("dddd, MMM Do 'YY")
+                  }}
+                </vs-td>
+
+                <vs-td :data="data[indextr].name">
                   <router-link
-                    :to="`/view-content/${data[indextr].id}`"
+                    :to="`/truck/${data[indextr].id}`"
                     class="font-bold"
                   >
                     {{ data[indextr].name }}</router-link
                   >
                 </vs-td>
 
-                <vs-td :data="data[indextr].synopsis">
-                  <span
-                    class="text-small"
-                    v-html="data[indextr].synopsis"
-                  ></span>
+                <vs-td :data="data[indextr].type">
+                  <span class="text-small" v-html="data[indextr].type"></span>
                 </vs-td>
-                <vs-td :data="data[indextr].pregnancy_week">
-                  {{ data[indextr].pregnancy_week }} - Week
-                </vs-td>
-
-                <!-- <vs-td :data="data[indextr].synopsis">
-                  {{ data[indextr].synopsis }}
-                </vs-td> -->
-
-                <vs-td :data="data[indextr].id">
-                  <p class="text-small">Published</p>
-                  {{
-                    moment
-                      .utc(new Date(data[indextr].date_created))
-                      .format("dddd, MMM Do 'YY")
-                  }}
+                <vs-td :data="data[indextr].plate_number">
+                  {{ data[indextr].plate_number }}
                 </vs-td>
 
                 <vs-td>
                   <vs-button
-                    :to="`/edit-pregnancy-content/${data[indextr].id}`"
+                    :to="`/truck/${data[indextr].id}`"
                     size="small"
                     class="mr-2 mb-2"
-                    >Edit</vs-button
+                    >View</vs-button
                   >
                   <vs-button
                     @click="deleteItem(data[indextr].id)"
@@ -93,7 +86,7 @@
           <vs-pagination
             v-if="contents"
             class="mt-4"
-            :total="Math.ceil(contents.totalRecord / 10)"
+            :total="Math.ceil(contents.total / 10)"
             v-model="table_options.current_page"
           ></vs-pagination>
         </div>
@@ -101,45 +94,68 @@
     </div>
     <vs-popup class="addPopup" title="Add Truck" :active.sync="addData">
       <div>
-        <form action="">
-          <div class="my-3">
+        <form @submit.prevent="submitForm">
+          <div class="py-3">
             <vs-input
               class="w-full"
-              placeholder="Enter plate number"
-              v-model="value1"
+              label-placeholder="Enter Truck name"
+              v-model="name"
             />
           </div>
-          <div class="my-3">
-            <vs-select
+          <div class="py-3">
+            <vs-input
               class="w-full"
-              label="Select truck type"
-              v-model="select1"
-            >
-              <vs-select-item :value="'flatbed'" :text="'Flatbed'" />
-            </vs-select>
+              label-placeholder="Enter truck type"
+              v-model="type"
+            />
           </div>
 
-          <div class="my-3">
+          <div class="py-3">
             <vs-select
               class="w-full"
               label="Select truck state"
-              v-model="select1"
+              v-model="state"
             >
-              <vs-select-item :value="'Goodmode'" :text="'Good mode'" />
+              <vs-select-item value="good" text="Good" />
+              <vs-select-item value="bad" text="Bad" />
+              <vs-select-item value="fair" text="Fair" />
             </vs-select>
           </div>
 
-          <div class="my-3">
-            <vs-select class="w-full" label="Select manager" v-model="select1">
-              <vs-select-item :value="'kabiru'" :text="'Kabiru Salam'" />
+          <div class="py-3">
+            <vs-select
+              class="w-full"
+              label="Select manager"
+              v-model="manager_id"
+            >
+              <vs-select-item
+                v-for="(manager, index) in managers"
+                :key="index"
+                :value="manager.id"
+                :text="`${manager.firstname} ${manager.lastname} `"
+              />
             </vs-select>
           </div>
-
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Enter Plate number"
+              v-model="plate_number"
+            />
+          </div>
           <div class="mt-10">
-            <vs-button color="dark" class="w-full my-3" type="filled"
+            <vs-button
+              @click="submitForm"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
               >Add truck</vs-button
             >
-            <vs-button color="dark" class="w-full mb-2" type="flat"
+            <vs-button
+              @click="addData = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
               >Cancel</vs-button
             >
           </div>
@@ -157,6 +173,7 @@ export default {
   },
   mounted() {
     this.getBl();
+    this.getManagers();
   },
   data() {
     return {
@@ -166,7 +183,13 @@ export default {
       table_options: {
         current_page: 1,
       },
+      managers: [],
       delAct: "",
+      name: "",
+      type: "",
+      state: "",
+      manager_id: "",
+      plate_number: "",
     };
   },
   watch: {
@@ -196,8 +219,8 @@ export default {
         .then((resp) => {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
 
-          this.contents.records.splice(
-            this.contents.records.findIndex(function (i) {
+          this.contents.data.splice(
+            this.contents.data.findIndex(function (i) {
               return i.id === contID;
             }),
             1
@@ -233,8 +256,8 @@ export default {
         });
     },
     getBl() {
-      //   this.$store.commit("pgLoading", true);
-      //   this.getContents(false);
+      this.$store.commit("pgLoading", true);
+      this.getContents(false);
     },
 
     getContents(divLoad) {
@@ -245,7 +268,7 @@ export default {
         });
       }
       let fetch = {
-        type: "pregnancy",
+        path: "admin/trucks",
         pageNo: this.table_options.current_page,
       };
 
@@ -253,7 +276,6 @@ export default {
         .dispatch("getContents", fetch)
         .then((resp) => {
           this.contents = resp.data.data;
-
           if (divLoad) {
             this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           }
@@ -280,6 +302,91 @@ export default {
             });
           }
           this.$store.commit("pgLoading", false);
+        });
+    },
+    getManagers() {
+      let fetch = {
+        path: "admin/managers",
+      };
+
+      this.$store
+        .dispatch("get", fetch)
+        .then((resp) => {
+          this.managers = resp.data.data.data;
+
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
+    submitForm() {
+      this.$vs.loading();
+      let data = new FormData();
+      data.append("name", this.name);
+      data.append("type", this.type);
+      data.append("state", this.state);
+      data.append("manager_id", this.manager_id);
+      data.append("plate_number", this.plate_number);
+
+      let apiData = {
+        path: "admin/trucks",
+        data,
+      };
+      this.$store
+        .dispatch("create", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Create Truck profile",
+            text: "Successfully created new profile",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Create Truck",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Create Truck",
+              text: "Unable to Create Truck",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
         });
     },
   },

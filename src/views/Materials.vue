@@ -138,48 +138,58 @@
     </div>
     <vs-popup class="addPopup" title="Add Material" :active.sync="addData">
       <div>
-        <form action="">
-          <div class="my-3">
+        <form @submit.prevent="submitForm">
+          <div class="py-3">
             <vs-input
               class="w-full"
-              placeholder="Enter material name"
-              v-model="value1"
+              label-placeholder="Enter material name"
+              v-model="name"
             />
           </div>
-          <div class="my-3">
-            <vs-select
+
+          <div class="py-3">
+            <vs-input
               class="w-full"
-              label="Select material size"
-              v-model="select1"
-            >
-              <vs-select-item :value="'flatbed'" :text="'Flatbed'" />
-            </vs-select>
+              label-placeholder="Enter material size"
+              v-model="size"
+            />
           </div>
 
-          <div class="my-3">
+          <div class="py-3">
             <label class="text-small">Description</label>
-            <vs-textarea class="w-full" v-model="textarea" />
+            <vs-textarea class="w-full" v-model="description" />
           </div>
 
-          <div class="my-3">
-            <vs-select class="w-full" label="Select manager" v-model="select1">
-              <vs-select-item :value="'kabiru'" :text="'Kabiru Salam'" />
-            </vs-select>
-          </div>
-
-          <div class="my-3">
+          <div class="py-3">
             <vs-input
               class="w-full mt-5"
-              placeholder="Material price"
-              v-model="value1"
+              label-placeholder="Material price"
+              v-model="price"
+            />
+          </div>
+
+          <div class="py-3">
+            <vs-input
+              class="w-full mt-5"
+              type="file"
+              label="Material Images"
+              @change="addImages($event)"
             />
           </div>
 
           <div class="mt-10">
-            <vs-button color="dark" class="w-full my-3" type="filled"
+            <vs-button
+              @click="submitForm"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
               >Add material</vs-button
             >
-            <vs-button color="dark" class="w-full mb-2" type="flat"
+            <vs-button
+              @click="addData = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
               >Cancel</vs-button
             >
           </div>
@@ -207,6 +217,12 @@ export default {
         current_page: 1,
       },
       delAct: "",
+      name: "Granite",
+      size: "30",
+      description:
+        "Broad category of coarse- to medium-grained particulate material used in construction, including sand, gravel, crushed stone, slag, recycled concrete and geosynthetic aggregates",
+      price: "700",
+      images: "",
     };
   },
   watch: {
@@ -320,6 +336,60 @@ export default {
             });
           }
           this.$store.commit("pgLoading", false);
+        });
+    },
+    addImages() {
+      this.images = event.target.files[0];
+    },
+    submitForm() {
+      this.$vs.loading();
+      let data = new FormData();
+      data.append("name", this.name);
+      data.append("size", this.size);
+      data.append("description", this.description);
+      data.append("price", this.price);
+      data.append("images", this.images);
+
+      let apiData = {
+        path: "admin/materials",
+        data,
+      };
+      this.$store
+        .dispatch("create", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Create Material",
+            text: "Successfully created new material",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Create Material",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Create Material",
+              text: "Unable to Create Material",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
         });
     },
   },

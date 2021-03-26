@@ -21,69 +21,66 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.totalRecord }})</p>
+            <p class="font-bold lead">All ({{ contents.total }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.records"
+            :data="contents.data"
             search
           >
             <template slot="thead">
-              <vs-th> Company name </vs-th>
+              <vs-th> Created </vs-th>
               <vs-th> Full name </vs-th>
               <vs-th> Email address </vs-th>
-              <vs-th> Truck </vs-th>
+              <vs-th> Phone</vs-th>
               <vs-th> Action </vs-th>
             </template>
 
             <template slot-scope="{ data }">
               <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td :data="data[indextr].title">
-                  <router-link
-                    :to="`/view-content/${data[indextr].id}`"
-                    class="font-bold"
-                  >
-                    {{ data[indextr].name }}</router-link
-                  >
-                </vs-td>
-
-                <vs-td :data="data[indextr].synopsis">
-                  <span
-                    class="text-small"
-                    v-html="data[indextr].synopsis"
-                  ></span>
-                </vs-td>
-                <vs-td :data="data[indextr].pregnancy_week">
-                  {{ data[indextr].pregnancy_week }} - Week
-                </vs-td>
-
-                <!-- <vs-td :data="data[indextr].synopsis">
-                  {{ data[indextr].synopsis }}
-                </vs-td> -->
-
                 <vs-td :data="data[indextr].id">
-                  <p class="text-small">Published</p>
                   {{
                     moment
-                      .utc(new Date(data[indextr].date_created))
+                      .utc(new Date(data[indextr].created_at))
                       .format("dddd, MMM Do 'YY")
                   }}
                 </vs-td>
+                <vs-td :data="data[indextr].firstname">
+                  <router-link
+                    :to="`/view-profile/${data[indextr].id}`"
+                    class="font-bold"
+                    style="align-items: center; display: flex"
+                  >
+                    <vs-avatar
+                      class="mr-2"
+                      :src="data[indextr].profile_photo_url"
+                    />
+                    {{ data[indextr].firstname }}
+                    {{ data[indextr].lastname }}</router-link
+                  >
+                </vs-td>
+
+                <vs-td :data="data[indextr].email">
+                  <span class="text-small" v-html="data[indextr].email"></span>
+                </vs-td>
+                <vs-td :data="data[indextr].phone">
+                  {{ data[indextr].phone }}
+                </vs-td>
 
                 <vs-td>
-                  <vs-button
+                  <!-- <vs-button
                     :to="`/edit-pregnancy-content/${data[indextr].id}`"
                     size="small"
                     class="mr-2 mb-2"
                     >Edit</vs-button
-                  >
+                  > -->
                   <vs-button
                     @click="deleteItem(data[indextr].id)"
                     size="small"
                     color="dark"
-                    >Delete</vs-button
+                    >Disable</vs-button
                   >
                 </vs-td>
               </vs-tr>
@@ -93,7 +90,7 @@
           <vs-pagination
             v-if="contents"
             class="mt-4"
-            :total="Math.ceil(contents.totalRecord / 10)"
+            :total="Math.ceil(contents.total / 10)"
             v-model="table_options.current_page"
           ></vs-pagination>
         </div>
@@ -105,33 +102,79 @@
       :active.sync="addData"
     >
       <div>
-        <form action="">
-          <div class="my-3">
+        <form @submit.prevent="submitForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="py-3">
+                <vs-input
+                  class="w-full"
+                  label-placeholder="First name"
+                  v-model="firstname"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="py-3">
+                <vs-input
+                  class="w-full"
+                  label-placeholder="Last name"
+                  v-model="lastname"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="py-3">
             <vs-input
               class="w-full"
-              placeholder="First name"
-              v-model="value1"
+              label-placeholder="Email address"
+              v-model="email"
             />
           </div>
-          <div class="my-3">
-            <vs-input class="w-full" placeholder="Last name" v-model="value1" />
-          </div>
-          <div class="my-3">
+          <div class="py-3">
             <vs-input
               class="w-full"
-              placeholder="Email address"
-              v-model="value1"
+              label-placeholder="Phone number"
+              v-model="phone"
             />
           </div>
-          <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="Phone number"
-              v-model="value1"
-            />
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Company name"
+                v-model="company_name"
+              />
+            </div>
           </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="py-3">
+                <vs-input
+                  class="w-full"
+                  label-placeholder="Password"
+                  v-model="password"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="py-3">
+                <vs-input
+                  class="w-full"
+                  label-placeholder="Confirm password"
+                  v-model="password_confirmation"
+                />
+              </div>
+            </div>
+          </div>
+
           <div class="mt-10">
-            <vs-button color="dark" class="w-full my-3" type="filled"
+            <vs-button
+              @click="submitForm"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
               >Add manager profile</vs-button
             >
             <vs-button color="dark" class="w-full mb-2" type="flat"
@@ -161,6 +204,13 @@ export default {
         current_page: 1,
       },
       delAct: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      phone: "",
+      password: "",
+      password_confirmation: "",
+      company_name: "",
     };
   },
   watch: {
@@ -227,10 +277,9 @@ export default {
         });
     },
     getBl() {
-      //   this.$store.commit("pgLoading", true);
-      //   this.getContents(false);
+      this.$store.commit("pgLoading", true);
+      this.getContents(false);
     },
-
     getContents(divLoad) {
       if (divLoad) {
         this.$vs.loading({
@@ -239,13 +288,14 @@ export default {
         });
       }
       let fetch = {
-        type: "pregnancy",
+        path: "admin/managers",
         pageNo: this.table_options.current_page,
       };
 
       this.$store
         .dispatch("getContents", fetch)
         .then((resp) => {
+          console.log(resp.data.data);
           this.contents = resp.data.data;
 
           if (divLoad) {
@@ -258,7 +308,7 @@ export default {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           if (err.response) {
             this.$vs.notify({
-              title: "Get Contents",
+              title: "Get Data",
               text: err.response.data.message,
               color: "warning",
               icon: "error",
@@ -266,8 +316,8 @@ export default {
             });
           } else {
             this.$vs.notify({
-              title: "Get Contents",
-              text: "Unable to get contents",
+              title: "Get Data",
+              text: "Unable to get Data",
               color: "dark",
               icon: "error",
               position: "bottom-center",
@@ -275,6 +325,69 @@ export default {
           }
           this.$store.commit("pgLoading", false);
         });
+    },
+    submitForm() {
+      if (this.password !== this.password_confirmation) {
+        this.$vs.notify({
+          icon: "error",
+          color: "dark",
+          position: "bottom-center",
+          title: "Password mismatch",
+          text: "Check password again",
+        });
+      } else {
+        this.$vs.loading();
+        let data = new FormData();
+        data.append("firstname", this.firstname);
+        data.append("lastname", this.lastname);
+        data.append("email", this.email);
+        data.append("phone", this.phone);
+        data.append("password", this.password);
+        data.append("password_confirmation", this.password_confirmation);
+        data.append("company_name", this.company_name);
+
+        let apiData = {
+          path: "admin/managers",
+          data,
+        };
+        this.$store
+          .dispatch("create", apiData)
+          .then((resp) => {
+            this.$vs.loading.close();
+
+            this.$vs.notify({
+              title: "Create Manager profile",
+              text: "Successfully created new profile",
+              color: "success",
+              icon: "verified_user",
+              position: "bottom-center",
+            });
+
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
+          })
+          .catch((err) => {
+            this.$vs.loading.close();
+            if (err.response) {
+              this.$vs.notify({
+                title: "Create Manager profile",
+                text: err.response.data.message,
+                color: "warning",
+                icon: "error",
+                position: "bottom-center",
+              });
+            } else {
+              this.$vs.notify({
+                title: "Create Manager profile",
+                text: "Unable to Create Manager profile",
+                color: "dark",
+                icon: "error",
+                position: "bottom-center",
+              });
+            }
+          });
+      }
     },
   },
 };

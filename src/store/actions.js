@@ -345,7 +345,7 @@ const actions = {
         });
     });
   },
-  getContent({ commit, dispatch, getters }, id) {
+  getContent({ commit, dispatch, getters }, fetch) {
     return new Promise((resolve, reject) => {
       const userToken = getters.token;
       axios({
@@ -376,7 +376,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       const userToken = getters.token;
       axios({
-        url: `contents?&page=${fetch.pageNo}&?type=${fetch.type}`,
+        url: `${fetch.path}?&page=${fetch.pageNo}`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${userToken}`,
