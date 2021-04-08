@@ -70,12 +70,12 @@
                 </vs-td>
 
                 <vs-td>
-                  <!-- <vs-button
-                    :to="`/edit-pregnancy-content/${data[indextr].id}`"
+                  <vs-button
+                    :to="`/view-profile/${data[indextr].id}`"
                     size="small"
                     class="mr-2 mb-2"
-                    >Edit</vs-button
-                  > -->
+                    >View</vs-button
+                  >
                   <vs-button
                     @click="deleteItem(data[indextr].id)"
                     size="small"
@@ -295,7 +295,7 @@ export default {
       this.$store
         .dispatch("getContents", fetch)
         .then((resp) => {
-          console.log(resp.data.data);
+          // console.log(resp.data.data);
           this.contents = resp.data.data;
 
           if (divLoad) {

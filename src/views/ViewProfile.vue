@@ -23,25 +23,24 @@
     <div class="mt-5">
       <div class="row mb-10" style="align-items: center">
         <div class="col-3 col-md-2">
-          <vs-avatar
-            size="150px"
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
+          <vs-avatar size="150px" :src="datacontent.profile_photo_url" />
         </div>
         <div class="col-9 col-md-10">
-          <h2 class="mb-2">Kareem Salami</h2>
+          <h2 class="mb-2">
+            {{ datacontent.firstname }} {{ datacontent.lastname }}
+          </h2>
           <p class="">
             <a
               class="text-underline text-black font-light text-small"
-              href="mailto:"
-              >horpeyeureka@gmail.com</a
+              :href="`mailto:${datacontent.email}`"
+              >{{ datacontent.email }}</a
             >
           </p>
           <p class="">
             <a
               class="text-underline text-black font-light text-small"
-              href="tel:"
-              >+234 8117293921</a
+              :href="`tel:${datacontent.phone}`"
+              >{{ datacontent.phone }}</a
             >
           </p>
         </div>
@@ -52,7 +51,7 @@
             <div class="p-3">
               <div class="row">
                 <div class="col-9">
-                  <h4 class="font-bold">23,423</h4>
+                  <h4 class="font-bold">-</h4>
                   <p class="mt-3">Total Trips</p>
                 </div>
                 <div class="col-3">
@@ -69,7 +68,7 @@
             <div class="p-3">
               <div class="row">
                 <div class="col-9">
-                  <h4 class="font-bold">23,423</h4>
+                  <h4 class="font-bold">-</h4>
                   <p class="mt-3">Total Trips</p>
                 </div>
                 <div class="col-3">
@@ -170,28 +169,16 @@
       <div>
         <form action="">
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="First name"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="First name" />
           </div>
           <div class="my-3">
-            <vs-input class="w-full" placeholder="Last name" v-model="value1" />
+            <vs-input class="w-full" placeholder="Last name" />
           </div>
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="Email address"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="Email address" />
           </div>
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="Phone number"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="Phone number" />
           </div>
           <div class="mt-10">
             <vs-button color="dark" class="w-full my-3" type="filled"
@@ -214,6 +201,7 @@ export default {
     },
   },
   mounted() {
+    this.getData();
     this.getBl();
   },
   data() {
@@ -223,6 +211,7 @@ export default {
       table_options: {
         current_page: 1,
       },
+      datacontent: {},
       delAct: "",
     };
   },
@@ -232,6 +221,39 @@ export default {
     },
   },
   methods: {
+    getData() {
+      this.$store.commit("pgLoading", true);
+      let fetch = {
+        path: `admin/managers/${this.$route.params.id}`,
+      };
+      this.$store
+        .dispatch("getContentsDetail", fetch)
+        .then((resp) => {
+          // console.log(resp.data.data);
+          this.datacontent = resp.data.data;
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
     deleteItem(id) {
       this.delAct = id;
       this.$vs.dialog({
