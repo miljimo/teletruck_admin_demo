@@ -58,69 +58,66 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.totalRecord }})</p>
+            <p class="font-bold lead">All ({{ contents.total }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.records"
+            :data="contents.data"
             search
           >
             <template slot="thead">
-              <vs-th> Name </vs-th>
-              <vs-th> Status</vs-th>
-              <vs-th> Plate number </vs-th>
-              <vs-th> Manager </vs-th>
+              <vs-th> Created </vs-th>
+              <vs-th> Full name </vs-th>
+              <vs-th> Email address </vs-th>
+              <vs-th> Phone</vs-th>
               <vs-th> Action </vs-th>
             </template>
 
             <template slot-scope="{ data }">
               <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td :data="data[indextr].title">
-                  <router-link
-                    :to="`/view-content/${data[indextr].id}`"
-                    class="font-bold"
-                  >
-                    {{ data[indextr].name }}</router-link
-                  >
-                </vs-td>
-
-                <vs-td :data="data[indextr].synopsis">
-                  <span
-                    class="text-small"
-                    v-html="data[indextr].synopsis"
-                  ></span>
-                </vs-td>
-                <vs-td :data="data[indextr].pregnancy_week">
-                  {{ data[indextr].pregnancy_week }} - Week
-                </vs-td>
-
-                <!-- <vs-td :data="data[indextr].synopsis">
-                  {{ data[indextr].synopsis }}
-                </vs-td> -->
-
                 <vs-td :data="data[indextr].id">
-                  <p class="text-small">Published</p>
                   {{
                     moment
-                      .utc(new Date(data[indextr].date_created))
+                      .utc(new Date(data[indextr].created_at))
                       .format("dddd, MMM Do 'YY")
                   }}
+                </vs-td>
+                <vs-td :data="data[indextr].firstname">
+                  <router-link
+                    :to="`/view-profile/${data[indextr].id}`"
+                    class="font-bold"
+                    style="align-items: center; display: flex"
+                  >
+                    <vs-avatar
+                      class="mr-2"
+                      :src="data[indextr].profile_photo_url"
+                    />
+                    {{ data[indextr].firstname }}
+                    {{ data[indextr].lastname }}</router-link
+                  >
+                </vs-td>
+
+                <vs-td :data="data[indextr].email">
+                  <span class="text-small" v-html="data[indextr].email"></span>
+                </vs-td>
+                <vs-td :data="data[indextr].phone">
+                  {{ data[indextr].phone }}
                 </vs-td>
 
                 <vs-td>
                   <vs-button
-                    :to="`/edit-pregnancy-content/${data[indextr].id}`"
+                    :to="`/view-profile/${data[indextr].id}`"
                     size="small"
                     class="mr-2 mb-2"
-                    >Edit</vs-button
+                    >View</vs-button
                   >
                   <vs-button
                     @click="deleteItem(data[indextr].id)"
                     size="small"
                     color="dark"
-                    >Delete</vs-button
+                    >Disable</vs-button
                   >
                 </vs-td>
               </vs-tr>
@@ -130,7 +127,7 @@
           <vs-pagination
             v-if="contents"
             class="mt-4"
-            :total="Math.ceil(contents.totalRecord / 10)"
+            :total="Math.ceil(contents.total / 10)"
             v-model="table_options.current_page"
           ></vs-pagination>
         </div>
@@ -217,11 +214,10 @@ export default {
         current_page: 1,
       },
       delAct: "",
-      name: "Granite",
-      size: "30",
-      description:
-        "Broad category of coarse- to medium-grained particulate material used in construction, including sand, gravel, crushed stone, slag, recycled concrete and geosynthetic aggregates",
-      price: "700",
+      name: "",
+      size: "",
+      description: "",
+      price: "",
       images: "",
     };
   },
@@ -289,10 +285,9 @@ export default {
         });
     },
     getBl() {
-      //   this.$store.commit("pgLoading", true);
-      //   this.getContents(false);
+      this.$store.commit("pgLoading", true);
+      this.getContents(false);
     },
-
     getContents(divLoad) {
       if (divLoad) {
         this.$vs.loading({
@@ -301,13 +296,14 @@ export default {
         });
       }
       let fetch = {
-        type: "pregnancy",
+        path: "admin/materials",
         pageNo: this.table_options.current_page,
       };
 
       this.$store
         .dispatch("getContents", fetch)
         .then((resp) => {
+          // console.log(resp.data.data);
           this.contents = resp.data.data;
 
           if (divLoad) {
@@ -320,7 +316,7 @@ export default {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           if (err.response) {
             this.$vs.notify({
-              title: "Get Contents",
+              title: "Get Data",
               text: err.response.data.message,
               color: "warning",
               icon: "error",
@@ -328,8 +324,8 @@ export default {
             });
           } else {
             this.$vs.notify({
-              title: "Get Contents",
-              text: "Unable to get contents",
+              title: "Get Data",
+              text: "Unable to get Data",
               color: "dark",
               icon: "error",
               position: "bottom-center",

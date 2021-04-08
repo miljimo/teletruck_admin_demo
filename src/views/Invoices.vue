@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Invoices (12)</h3>
+        <h3 class="font-bold d-inline">Invoices</h3>
       </div>
       <div class="col-md-3 col-8">
         <div class="text-right">
@@ -21,13 +21,13 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.totalRecord }})</p>
+            <p class="font-bold lead">All ({{ contents.total }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.records"
+            :data="contents.data"
             search
           >
             <template slot="thead">
@@ -105,34 +105,22 @@
       <div>
         <form action="">
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="Enter plate number"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="Enter plate number" />
           </div>
           <div class="my-3">
-            <vs-select
-              class="w-full"
-              label="Select truck type"
-              v-model="select1"
-            >
+            <vs-select class="w-full" label="Select truck type">
               <vs-select-item :value="'flatbed'" :text="'Flatbed'" />
             </vs-select>
           </div>
 
           <div class="my-3">
-            <vs-select
-              class="w-full"
-              label="Select truck state"
-              v-model="select1"
-            >
+            <vs-select class="w-full" label="Select truck state">
               <vs-select-item :value="'Goodmode'" :text="'Good mode'" />
             </vs-select>
           </div>
 
           <div class="my-3">
-            <vs-select class="w-full" label="Select manager" v-model="select1">
+            <vs-select class="w-full" label="Select manager">
               <vs-select-item :value="'kabiru'" :text="'Kabiru Salam'" />
             </vs-select>
           </div>
@@ -235,8 +223,8 @@ export default {
         });
     },
     getBl() {
-      //   this.$store.commit("pgLoading", true);
-      //   this.getContents(false);
+      this.$store.commit("pgLoading", true);
+      this.getContents(false);
     },
 
     getContents(divLoad) {
@@ -247,7 +235,7 @@ export default {
         });
       }
       let fetch = {
-        type: "pregnancy",
+        path: "admin/invoices",
         pageNo: this.table_options.current_page,
       };
 
