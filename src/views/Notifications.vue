@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="vx-card" style="max-width: 600px; margin: 0 auto;">
+    <div class="vx-card" style="max-width: 600px; margin: 0 auto">
       <div class="vx-card__header">
         <div class="vx-card__title" style="width: 100%">
           <div class="vs-row w-full">
@@ -24,25 +24,32 @@
           <ul class="vx-timeline">
             <li
               class="cursor-pointer"
-              @click="ReadNotification(ntf,index)"
-              v-for="(ntf,index) in Notifications"
+              @click="ReadNotification(ntf, index)"
+              v-for="(ntf, index) in Notifications"
               :key="index"
             >
               <div class="timeline-info">
                 <!-- :class="[ntf.read.length < 1 ? 'text-primary' : '', 'font-semibold']" -->
-                <p>{{ntf.title | truncate(40) }}</p>
-                <small v-if="ntf">{{churchEmail }}</small>
+                <p>{{ ntf.title | truncate(40) }}</p>
+                <!-- <small v-if="ntf">{{ churchEmail }}</small> -->
               </div>
-              <small class="text-grey activity-e-time">{{ elapsedTime(ntf.createdAt)}}</small>
+              <small class="text-grey activity-e-time">{{
+                elapsedTime(ntf.createdAt)
+              }}</small>
               <hr class="opacity-25 my-5" />
             </li>
           </ul>
         </div>
         <!---->
       </div>
-      <div class="vx-card__code-container collapsed" style="max-height: 0px; display: none;">
+      <div
+        class="vx-card__code-container collapsed"
+        style="max-height: 0px; display: none"
+      >
         <div class="code-content">
-          <pre class="language-markup"><code class="language-markup"></code></pre>
+          <pre
+            class="language-markup"
+          ><code class="language-markup"></code></pre>
         </div>
       </div>
     </div>
@@ -53,15 +60,18 @@
       :title="churchEmail"
       :active.sync="notificationPopUp"
     >
-      <p class="mt-1 mb-1">{{prevNotif.title}}</p>
-      <p class="italic text-sm mb-5 mt-4">{{ elapsedTime(prevNotif.createdAt) }}</p>
+      <p class="mt-1 mb-1">{{ prevNotif.title }}</p>
+      <p class="italic text-sm mb-5 mt-4">
+        {{ elapsedTime(prevNotif.createdAt) }}
+      </p>
       <vs-button
         color="primary"
         type="border"
         icon="clear"
         icon-before
         @click="clearNotification(prevNotif._id)"
-      >Clear</vs-button>
+        >Clear</vs-button
+      >
     </vs-popup>
   </div>
 </template>
@@ -69,15 +79,28 @@
 export default {
   data() {
     return {
-      Notifications: [],
+      Notifications: [
+        {
+          title: "Notification Title 1 here",
+          createdAt: "12 March 2020",
+        },
+        {
+          title: "Notification Title 2 here",
+          createdAt: "12 March 2020",
+        },
+        {
+          title: "Notification Title 3 here",
+          createdAt: "12 March 2020",
+        },
+      ],
       notificationPopUp: false,
       prevNotif: {},
       churchEmail: "",
     };
   },
   mounted() {
-    this.openLoadingInDiv();
-    this.getNotifications();
+    // this.openLoadingInDiv();
+    // this.getNotifications();
   },
   methods: {
     clearNotification(id) {
@@ -196,11 +219,11 @@ export default {
       return "Just Now";
     },
     ReadNotification(ntf, index) {
-      this.notificationPopUp = true;
-      this.churchEmail = this.Notifications[index].churchId.email;
-      this.prevNotif = ntf;
-      this.Notifications[index].read.push(this.prevNotif._id);
-      this.readReceipt(this.prevNotif._id);
+      // this.notificationPopUp = true;
+      // this.churchEmail = this.Notifications[index].churchId.email;
+      // this.prevNotif = ntf;
+      // this.Notifications[index].read.push(this.prevNotif._id);
+      // this.readReceipt(this.prevNotif._id);
     },
     readReceipt(id) {
       this.$store

@@ -5,15 +5,7 @@
         <h3 class="font-bold d-inline">Invoices</h3>
       </div>
       <div class="col-md-3 col-8">
-        <div class="text-right">
-          <vs-button
-            @click="addData = true"
-            color="dark"
-            class="ml-5"
-            type="filled"
-            >Add New</vs-button
-          >
-        </div>
+        <div class="text-right"></div>
       </div>
     </div>
 
@@ -35,8 +27,9 @@
               <vs-th> Invoice ID </vs-th>
               <vs-th> Status </vs-th>
               <vs-th> Client </vs-th>
-              <vs-th> Manager </vs-th>
+              <vs-th> Company </vs-th>
               <vs-th> Amount </vs-th>
+              <vs-th> Status </vs-th>
               <vs-th> Action </vs-th>
             </template>
 

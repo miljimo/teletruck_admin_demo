@@ -13,7 +13,7 @@
         <img
           v-if="user"
           key="onlineImg"
-          src="/userdp.svg"
+          :src="user.profile_photo_url"
           alt="user-img"
           width="40"
           height="40"

@@ -30,6 +30,12 @@ export default [
     icon: "CreditCardIcon",
   },
   {
+    url: "/reports",
+    name: "Reports",
+    slug: "report",
+    icon: "FileTextIcon",
+  },
+  {
     url: "/invoices",
     name: "Invoices",
     slug: "invoices",

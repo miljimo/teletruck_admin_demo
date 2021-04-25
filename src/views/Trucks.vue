@@ -32,8 +32,10 @@
           >
             <template slot="thead">
               <vs-th> Date Created </vs-th>
-              <vs-th> Name </vs-th>
+              <vs-th> Title </vs-th>
               <vs-th> Truck type </vs-th>
+              <vs-th> Truck State </vs-th>
+
               <vs-th> Plate number </vs-th>
               <!-- <vs-th> Manager </vs-th> -->
               <vs-th> Action </vs-th>
@@ -125,7 +127,7 @@
           <div class="py-3">
             <vs-select
               class="w-full"
-              label="Select manager"
+              label="Select Company"
               v-model="manager_id"
             >
               <vs-select-item

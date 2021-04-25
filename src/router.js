@@ -38,6 +38,16 @@ const router = new Router({
           component: () => import("./views/Companies.vue"),
         },
         {
+          path: "/reports",
+          name: "reports",
+          component: () => import("./views/Reports.vue"),
+        },
+        {
+          path: "/notifications",
+          name: "notifications",
+          component: () => import("./views/Notifications.vue"),
+        },
+        {
           path: "/view-profile/:id",
           name: "view-profile",
           component: () => import("./views/ViewProfile.vue"),

@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Companies (12)</h3>
+        <h3 class="font-bold d-inline">Companies</h3>
       </div>
       <div class="col-md-3 col-8">
         <div class="text-right">
@@ -77,10 +77,19 @@
                     >View</vs-button
                   >
                   <vs-button
+                    @click="editCompany(data[indextr].id)"
+                    size="small"
+                    color="dark"
+                    class="mr-2 mb-2"
+                    >Edit</vs-button
+                  >
+                  <vs-button
                     @click="deleteItem(data[indextr].id)"
                     size="small"
                     color="dark"
-                    >Disable</vs-button
+                    class="mr-2 mb-2"
+                    type="border"
+                    >Deactivate</vs-button
                   >
                 </vs-td>
               </vs-tr>
@@ -98,27 +107,18 @@
     </div>
     <vs-popup
       class="addPopup"
-      title="Add manager profile"
+      title="Add Company profile"
       :active.sync="addData"
     >
       <div>
         <form @submit.prevent="submitForm">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
               <div class="py-3">
                 <vs-input
                   class="w-full"
-                  label-placeholder="First name"
+                  label-placeholder="Company name"
                   v-model="firstname"
-                />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="py-3">
-                <vs-input
-                  class="w-full"
-                  label-placeholder="Last name"
-                  v-model="lastname"
                 />
               </div>
             </div>
@@ -127,14 +127,21 @@
           <div class="py-3">
             <vs-input
               class="w-full"
-              label-placeholder="Email address"
+              label-placeholder="Company address"
               v-model="email"
             />
           </div>
           <div class="py-3">
             <vs-input
               class="w-full"
-              label-placeholder="Phone number"
+              label-placeholder="Company Email"
+              v-model="email"
+            />
+          </div>
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Company Phone number"
               v-model="phone"
             />
           </div>
@@ -148,24 +155,32 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <div class="py-3">
-                <vs-input
-                  class="w-full"
-                  label-placeholder="Password"
-                  v-model="password"
-                />
-              </div>
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager name"
+                v-model="company_name"
+              />
             </div>
-            <div class="col-md-6">
-              <div class="py-3">
-                <vs-input
-                  class="w-full"
-                  label-placeholder="Confirm password"
-                  v-model="password_confirmation"
-                />
-              </div>
+          </div>
+
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager Email"
+                v-model="company_name"
+              />
+            </div>
+          </div>
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager Phone number"
+                v-model="company_name"
+              />
             </div>
           </div>
 
@@ -175,9 +190,112 @@
               color="dark"
               class="w-full my-3"
               type="filled"
-              >Add manager profile</vs-button
+              >Add Company Profile</vs-button
             >
-            <vs-button color="dark" class="w-full mb-2" type="flat"
+            <vs-button
+              @click="addData = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
+              >Cancel</vs-button
+            >
+          </div>
+        </form>
+      </div>
+    </vs-popup>
+
+    <vs-popup
+      class="addPopup"
+      title="Edit Company profile"
+      :active.sync="editView"
+    >
+      <div>
+        <form @submit.prevent="submitForm">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="py-3">
+                <vs-input
+                  class="w-full"
+                  label-placeholder="Company name"
+                  v-model="firstname"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Company address"
+              v-model="email"
+            />
+          </div>
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Company Email"
+              v-model="email"
+            />
+          </div>
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Company Phone number"
+              v-model="phone"
+            />
+          </div>
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Company name"
+                v-model="company_name"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager name"
+                v-model="company_name"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager Email"
+                v-model="company_name"
+              />
+            </div>
+          </div>
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager Phone number"
+                v-model="company_name"
+              />
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <vs-button
+              @click="submitForm"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
+              >Edit Company Profile</vs-button
+            >
+            <vs-button
+              @click="editView = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
               >Cancel</vs-button
             >
           </div>
@@ -203,6 +321,7 @@ export default {
       table_options: {
         current_page: 1,
       },
+      editView: false,
       delAct: "",
       firstname: "",
       lastname: "",
@@ -219,6 +338,9 @@ export default {
     },
   },
   methods: {
+    editCompany(id) {
+      this.editView = true;
+    },
     deleteItem(id) {
       this.delAct = id;
       this.$vs.dialog({
@@ -356,7 +478,7 @@ export default {
             this.$vs.loading.close();
 
             this.$vs.notify({
-              title: "Create Manager profile",
+              title: "Create Company Profile",
               text: "Successfully created new profile",
               color: "success",
               icon: "verified_user",
@@ -371,7 +493,7 @@ export default {
             this.$vs.loading.close();
             if (err.response) {
               this.$vs.notify({
-                title: "Create Manager profile",
+                title: "Create Company Profile",
                 text: err.response.data.message,
                 color: "warning",
                 icon: "error",
@@ -379,8 +501,8 @@ export default {
               });
             } else {
               this.$vs.notify({
-                title: "Create Manager profile",
-                text: "Unable to Create Manager profile",
+                title: "Create Company Profile",
+                text: "Unable to Create Company Profile",
                 color: "dark",
                 icon: "error",
                 position: "bottom-center",
