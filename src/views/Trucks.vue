@@ -339,7 +339,7 @@ export default {
         .then((resp) => {
           this.managers = resp.data.data.data;
 
-          console.log(this.managers);
+          // console.log(this.managers);
           this.$store.commit("pgLoading", false);
         })
         .catch((err) => {

@@ -146,22 +146,30 @@
 
           <div class="py-3">
             <label class="text-small">Description</label>
-            <vs-textarea class="w-full" v-model="description" />
+            <vs-textarea class="w-full mb-0" v-model="description" />
           </div>
 
-
-            <vs-select-item
-                v-for="(manager, index) in managers"
+          <div class="py-3">
+            <vs-select
+              class="w-full"
+              label="Select Category"
+              v-model="category_id"
+            >
+              <vs-select-item
+                v-for="(category, index) in categories"
                 :key="index"
-                :value="manager.id"
-                :text="`${manager.firstname} ${manager.lastname} `"
+                :value="category.id"
+                :text="`${category.name}`"
               />
             </vs-select>
+          </div>
 
           <div class="py-3">
             <vs-input
               class="w-full mt-5"
               type="file"
+              multiple
+              accept="image/*"
               label="Material Images"
               @change="addImages($event)"
             />
@@ -197,6 +205,7 @@ export default {
   },
   mounted() {
     this.getBl();
+    this.getCategories();
   },
   data() {
     return {
@@ -211,7 +220,8 @@ export default {
       size: "",
       description: "",
       price: "",
-      images: "",
+      images: [],
+      category_id: "",
     };
   },
   watch: {
@@ -220,6 +230,40 @@ export default {
     },
   },
   methods: {
+    getCategories() {
+      let fetch = {
+        path: "/admin/materials/category",
+      };
+
+      this.$store
+        .dispatch("getContents", fetch)
+        .then((resp) => {
+          this.categories = resp.data.data;
+          // console.log(resp.data.data);
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
     deleteItem(id) {
       this.delAct = id;
       this.$vs.dialog({
@@ -327,16 +371,21 @@ export default {
           this.$store.commit("pgLoading", false);
         });
     },
-    addImages() {
-      this.images = event.target.files[0];
+    addImages(event) {
+      console.log(event.target.files);
+      this.images = event.target.files;
+      // for (var i = 0; i < event.target.files.length; ++i) {
+      //   console.log(event.target.files[i]);
+      //   this.images.push(event.target.files[i]);
+      // }
+      // console.log(this.images);
     },
     submitForm() {
       this.$vs.loading();
       let data = new FormData();
       data.append("name", this.name);
-      data.append("size", this.size);
       data.append("description", this.description);
-      data.append("price", this.price);
+      data.append("category_id", this.category_id);
       data.append("images", this.images);
 
       let apiData = {
