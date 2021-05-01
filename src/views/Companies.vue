@@ -32,7 +32,8 @@
           >
             <template slot="thead">
               <vs-th> Created </vs-th>
-              <vs-th> Full name </vs-th>
+              <vs-th> Company </vs-th>
+              <vs-th> Manager </vs-th>
               <vs-th> Email address </vs-th>
               <vs-th> Phone</vs-th>
               <vs-th> Action </vs-th>
@@ -46,6 +47,17 @@
                       .utc(new Date(data[indextr].created_at))
                       .format("dddd, MMM Do 'YY")
                   }}
+                </vs-td>
+                <vs-td :data="data[indextr].firstname">
+                  <router-link
+                    :to="`/view-profile/${data[indextr].id}`"
+                    class="font-bold"
+                    style="align-items: center; display: flex"
+                  >
+                    <span v-if="data[indextr].profile">
+                      {{ data[indextr].profile.company_name }}</span
+                    >
+                  </router-link>
                 </vs-td>
                 <vs-td :data="data[indextr].firstname">
                   <router-link
@@ -77,20 +89,25 @@
                     >View</vs-button
                   >
                   <vs-button
-                    @click="editCompany(data[indextr].id)"
+                    @click="editCompany(data[indextr])"
                     size="small"
                     color="dark"
                     class="mr-2 mb-2"
                     >Edit</vs-button
                   >
+
                   <vs-button
-                    @click="deleteItem(data[indextr].id)"
+                    @click="toggleStatus(data[indextr].id)"
                     size="small"
                     color="dark"
                     class="mr-2 mb-2"
                     type="border"
-                    >Deactivate</vs-button
                   >
+                    <span v-if="data[indextr].status_text == 'active'"
+                      >Deactivate</span
+                    >
+                    <span v-else>Activate</span>
+                  </vs-button>
                 </vs-td>
               </vs-tr>
             </template>
@@ -118,7 +135,7 @@
                 <vs-input
                   class="w-full"
                   label-placeholder="Company name"
-                  v-model="firstname"
+                  v-model="company_name"
                 />
               </div>
             </div>
@@ -128,40 +145,42 @@
             <vs-input
               class="w-full"
               label-placeholder="Company address"
-              v-model="email"
+              v-model="company_address"
             />
           </div>
-          <div class="py-3">
+          <!-- <div class="py-3">
             <vs-input
               class="w-full"
               label-placeholder="Company Email"
               v-model="email"
             />
-          </div>
-          <div class="py-3">
+          </div> -->
+          <!-- <div class="py-3">
             <vs-input
               class="w-full"
               label-placeholder="Company Phone number"
               v-model="phone"
             />
-          </div>
-          <div>
-            <div class="py-3">
-              <vs-input
-                class="w-full"
-                label-placeholder="Company name"
-                v-model="company_name"
-              />
-            </div>
-          </div>
+          </div> -->
 
           <div>
             <div class="py-3">
-              <vs-input
-                class="w-full"
-                label-placeholder="Manager name"
-                v-model="company_name"
-              />
+              <div class="row">
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Manager First name"
+                    v-model="firstname"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Manager Last name"
+                    v-model="lastname"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -170,17 +189,39 @@
               <vs-input
                 class="w-full"
                 label-placeholder="Manager Email"
-                v-model="company_name"
+                v-model="email"
               />
             </div>
           </div>
           <div>
             <div class="py-3">
               <vs-input
+                max-length="11"
                 class="w-full"
                 label-placeholder="Manager Phone number"
-                v-model="company_name"
+                v-model="phone"
               />
+            </div>
+          </div>
+
+          <div>
+            <div class="py-3">
+              <div class="row">
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Password"
+                    v-model="password"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Confirm Password"
+                    v-model="password_confirmation"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -210,14 +251,14 @@
       :active.sync="editView"
     >
       <div>
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="editProfile">
           <div class="row">
             <div class="col-md-12">
               <div class="py-3">
                 <vs-input
                   class="w-full"
                   label-placeholder="Company name"
-                  v-model="firstname"
+                  v-model="edit.company_name"
                 />
               </div>
             </div>
@@ -227,40 +268,28 @@
             <vs-input
               class="w-full"
               label-placeholder="Company address"
-              v-model="email"
+              v-model="edit.company_address"
             />
-          </div>
-          <div class="py-3">
-            <vs-input
-              class="w-full"
-              label-placeholder="Company Email"
-              v-model="email"
-            />
-          </div>
-          <div class="py-3">
-            <vs-input
-              class="w-full"
-              label-placeholder="Company Phone number"
-              v-model="phone"
-            />
-          </div>
-          <div>
-            <div class="py-3">
-              <vs-input
-                class="w-full"
-                label-placeholder="Company name"
-                v-model="company_name"
-              />
-            </div>
           </div>
 
           <div>
             <div class="py-3">
-              <vs-input
-                class="w-full"
-                label-placeholder="Manager name"
-                v-model="company_name"
-              />
+              <div class="row">
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Manager First name"
+                    v-model="edit.firstname"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Manager Last name"
+                    v-model="edit.lastname"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -269,7 +298,7 @@
               <vs-input
                 class="w-full"
                 label-placeholder="Manager Email"
-                v-model="company_name"
+                v-model="edit.email"
               />
             </div>
           </div>
@@ -278,14 +307,14 @@
               <vs-input
                 class="w-full"
                 label-placeholder="Manager Phone number"
-                v-model="company_name"
+                v-model="edit.phone"
               />
             </div>
           </div>
 
           <div class="mt-10">
             <vs-button
-              @click="submitForm"
+              @click="editProfile"
               color="dark"
               class="w-full my-3"
               type="filled"
@@ -330,6 +359,17 @@ export default {
       password: "",
       password_confirmation: "",
       company_name: "",
+      company_address: "",
+      editData: {},
+      edit: {
+        firstname: "",
+        lastname: "",
+        email: "",
+        phone: "",
+        company_name: "",
+        company_address: "",
+        id: "",
+      },
     };
   },
   watch: {
@@ -338,8 +378,67 @@ export default {
     },
   },
   methods: {
-    editCompany(id) {
+    editCompany(data) {
       this.editView = true;
+      this.edit.id = data.id;
+      this.edit.firstname = data.firstname;
+      this.edit.lastname = data.lastname;
+      this.edit.email = data.email;
+      this.edit.phone = data.phone;
+      this.edit.company_name = data.profile.company_name;
+      this.edit.company_address = data.profile.office_address;
+
+      // console.log(data);
+    },
+    toggleStatus(id) {
+      this.$vs.loading({
+        container: "#div-with-loading",
+        scale: 0.6,
+      });
+      let data = {
+        id,
+      };
+      let apiData = {
+        path: `/admin/managers/${id}/toggle-status`,
+        data,
+      };
+      this.$store
+        .dispatch("create", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Company status",
+            text: "Status changed successfully",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Company status",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Company status",
+              text: "Unable to Change status",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+        });
     },
     deleteItem(id) {
       this.delAct = id;
@@ -448,13 +547,68 @@ export default {
           this.$store.commit("pgLoading", false);
         });
     },
+    editProfile() {
+      this.$vs.loading();
+      let data = new FormData();
+      data.append("firstname", this.edit.firstname);
+      data.append("lastname", this.edit.lastname);
+      data.append("email", this.edit.email);
+      data.append("phone", this.edit.phone);
+      data.append("company_name", this.edit.company_name);
+      data.append("company_address", this.edit.company_address);
+
+      let apiData = {
+        path: `/admin/managers/${this.edit.id}/update`,
+        data,
+      };
+      this.$store
+        .dispatch("create", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Edit Company Profile",
+            text: "Successfully editted new profile",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Edit Company Profile",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Create Company Profile",
+              text: "Unable to edit Company Profile",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+        });
+    },
     submitForm() {
-      if (this.password !== this.password_confirmation) {
+      if (
+        this.password !== this.password_confirmation &&
+        this.password.length < 8
+      ) {
         this.$vs.notify({
           icon: "error",
           color: "dark",
           position: "bottom-center",
-          title: "Password mismatch",
+          title: "Password mismatch or Charater length is less than 8",
           text: "Check password again",
         });
       } else {
@@ -467,6 +621,7 @@ export default {
         data.append("password", this.password);
         data.append("password_confirmation", this.password_confirmation);
         data.append("company_name", this.company_name);
+        data.append("company_address", this.company_address);
 
         let apiData = {
           path: "admin/managers",

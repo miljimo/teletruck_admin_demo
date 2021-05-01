@@ -8,9 +8,17 @@
       </div>
       <div class="col-md-4 col-8">
         <div class="text-right">
-          <vs-button color="dark" class="ml-5" type="border">Disable</vs-button>
           <vs-button
-            @click="addData = true"
+            @click="toggleStatus()"
+            color="dark"
+            class="ml-5"
+            type="border"
+          >
+            <span v-if="datacontent.status_text == 'active'">Deactivate</span>
+            <span v-else>Activate</span>
+          </vs-button>
+          <vs-button
+            @click="editCompany"
             color="dark"
             class="ml-5"
             type="filled"
@@ -22,10 +30,24 @@
 
     <div class="mt-5">
       <div class="row mb-10" style="align-items: center">
-        <div class="col-3 col-md-2">
+        <div class="col-md-2">
           <vs-avatar size="150px" :src="datacontent.profile_photo_url" />
         </div>
-        <div class="col-9 col-md-10">
+
+        <div class="col-md-3" v-if="datacontent.profile">
+          <p class="text-small mb-2 text-grey">Company Profile</p>
+          <h2 class="mb-2">
+            {{ datacontent.profile.company_name }}
+          </h2>
+          <p class="">
+            <span class="text-underline text-black font-light text-small">{{
+              datacontent.profile.office_address
+            }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3">
+          <p class="text-small mb-2 text-grey">Manager Profile</p>
           <h2 class="mb-2">
             {{ datacontent.firstname }} {{ datacontent.lastname }}
           </h2>
@@ -163,28 +185,84 @@
 
     <vs-popup
       class="addPopup"
-      title="Add manager profile"
-      :active.sync="addData"
+      title="Edit Company profile"
+      :active.sync="editView"
     >
       <div>
-        <form action="">
-          <div class="my-3">
-            <vs-input class="w-full" placeholder="First name" />
+        <form @submit.prevent="editProfile">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="py-3">
+                <vs-input
+                  class="w-full"
+                  label-placeholder="Company name"
+                  v-model="edit.company_name"
+                />
+              </div>
+            </div>
           </div>
-          <div class="my-3">
-            <vs-input class="w-full" placeholder="Last name" />
+
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Company address"
+              v-model="edit.company_address"
+            />
           </div>
-          <div class="my-3">
-            <vs-input class="w-full" placeholder="Email address" />
+
+          <div>
+            <div class="py-3">
+              <div class="row">
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Manager First name"
+                    v-model="edit.firstname"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <vs-input
+                    class="w-full"
+                    label-placeholder="Manager Last name"
+                    v-model="edit.lastname"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="my-3">
-            <vs-input class="w-full" placeholder="Phone number" />
+
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager Email"
+                v-model="edit.email"
+              />
+            </div>
           </div>
+          <div>
+            <div class="py-3">
+              <vs-input
+                class="w-full"
+                label-placeholder="Manager Phone number"
+                v-model="edit.phone"
+              />
+            </div>
+          </div>
+
           <div class="mt-10">
-            <vs-button color="dark" class="w-full my-3" type="filled"
-              >Add manager profile</vs-button
+            <vs-button
+              @click="editProfile"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
+              >Edit Company Profile</vs-button
             >
-            <vs-button color="dark" class="w-full mb-2" type="flat"
+            <vs-button
+              @click="editView = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
               >Cancel</vs-button
             >
           </div>
@@ -213,6 +291,17 @@ export default {
       },
       datacontent: {},
       delAct: "",
+      editView: false,
+      editData: {},
+      edit: {
+        firstname: "",
+        lastname: "",
+        email: "",
+        phone: "",
+        company_name: "",
+        company_address: "",
+        id: "",
+      },
     };
   },
   watch: {
@@ -221,6 +310,68 @@ export default {
     },
   },
   methods: {
+    editCompany() {
+      this.editView = true;
+      this.edit.id = this.datacontent.id;
+      this.edit.firstname = this.datacontent.firstname;
+      this.edit.lastname = this.datacontent.lastname;
+      this.edit.email = this.datacontent.email;
+      this.edit.phone = this.datacontent.phone;
+      this.edit.company_name = this.datacontent.profile.company_name;
+      this.edit.company_address = this.datacontent.profile.office_address;
+    },
+    editProfile() {
+      this.$vs.loading();
+      let data = new FormData();
+      data.append("firstname", this.edit.firstname);
+      data.append("lastname", this.edit.lastname);
+      data.append("email", this.edit.email);
+      data.append("phone", this.edit.phone);
+      data.append("company_name", this.edit.company_name);
+      data.append("company_address", this.edit.company_address);
+
+      let apiData = {
+        path: `/admin/managers/${this.edit.id}/update`,
+        data,
+      };
+      this.$store
+        .dispatch("create", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Edit Company Profile",
+            text: "Successfully editted new profile",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Edit Company Profile",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Create Company Profile",
+              text: "Unable to edit Company Profile",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+        });
+    },
     getData() {
       this.$store.commit("pgLoading", true);
       let fetch = {
@@ -252,6 +403,57 @@ export default {
             });
           }
           this.$store.commit("pgLoading", false);
+        });
+    },
+    toggleStatus() {
+      this.$vs.loading({
+        container: "#div-with-loading",
+        scale: 0.6,
+      });
+      let id = this.$route.params.id;
+      let data = {
+        id,
+      };
+      let apiData = {
+        path: `/admin/managers/${id}/toggle-status`,
+        data,
+      };
+      this.$store
+        .dispatch("create", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Company status",
+            text: "Status changed successfully",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Company status",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Company status",
+              text: "Unable to Change status",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
         });
     },
     deleteItem(id) {

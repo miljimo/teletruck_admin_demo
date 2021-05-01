@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row">
+    <div v-if="!loading" class="row">
       <div class="col-md-5">
         <div>
           <h1>Dashboard</h1>
@@ -35,22 +35,9 @@
           </vs-list-item>
           <vs-list>
             <vs-list-item
-              class="px-0 my-3"
-              title="Paid out #55,800 to Account Buba"
-              subtitle="Apr 28 at 22:45"
-            >
-              <p class="text-gray text-small">- 55,800.00</p>
-            </vs-list-item>
-
-            <vs-list-item
-              class="px-0 my-3"
-              title="Deposit from Bank"
-              subtitle="Feb 29 at 22:45"
-            >
-              <p class="text-gray text-small">+ 86,800.00</p>
-            </vs-list-item>
-
-            <vs-list-item
+              v-for="(order, index) in dashboardData.transactions"
+              :key="index"
+              v-if="index <= 2"
               class="px-0 my-3"
               title="Paid out #55,800 to Account Buba"
               subtitle="Apr 28 at 22:45"
@@ -67,7 +54,7 @@
               <div class="p-3">
                 <div class="row">
                   <div class="col-9">
-                    <h4 class="font-bold">23,423</h4>
+                    <h4 class="font-bold">{{ dashboardData.trips }}</h4>
                     <p class="mt-3">Total Trips</p>
                   </div>
                   <div class="col-3">
@@ -84,7 +71,7 @@
               <div class="p-3">
                 <div class="row">
                   <div class="col-9">
-                    <h4 class="font-bold">43</h4>
+                    <h4 class="font-bold">{{ dashboardData.materials }}</h4>
                     <p class="mt-3">Total Materials</p>
                   </div>
                   <div class="col-3">
@@ -102,7 +89,9 @@
               <div class="p-3">
                 <div class="row">
                   <div class="col-9">
-                    <h4 class="font-bold">₦3,100.00</h4>
+                    <h4 class="font-bold">
+                      {{ dashboardData.payin | currency("₦") }}
+                    </h4>
                     <p class="mt-3">Total Payin</p>
                   </div>
                   <div class="col-3">
@@ -119,7 +108,9 @@
               <div class="p-3">
                 <div class="row">
                   <div class="col-9">
-                    <h4 class="font-bold">₦3,290.68</h4>
+                    <h4 class="font-bold">
+                      {{ dashboardData.payout | currency("₦") }}
+                    </h4>
                     <p class="mt-3">Total Payout</p>
                   </div>
                   <div class="col-3">
@@ -137,18 +128,8 @@
           <vs-list-item title="Recent Orders"> </vs-list-item>
           <vs-list>
             <vs-list-item
-              class="px-0 my-3"
-              title="Makin made an Order for Granite"
-              subtitle="Apr 28 at 22:45"
-            >
-              <vs-button color="success" class="ml-5" size="small"
-                >Accept Order</vs-button
-              >
-              <vs-button color="danger" type="border" class="ml-2" size="small"
-                >Decline Order</vs-button
-              >
-            </vs-list-item>
-            <vs-list-item
+              v-for="(order, index) in dashboardData.recent_orders"
+              :key="index"
               class="px-0 my-3"
               title="Makin made an Order for Granite"
               subtitle="Apr 28 at 22:45"
@@ -170,10 +151,56 @@
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      dashboardData: {},
+    };
   },
-  methods: {},
-  mounted() {},
+  computed: {
+    loading() {
+      return this.$store.getters.pgLoading;
+    },
+  },
+  methods: {
+    getContent() {
+      let fetch = {
+        path: "admin/reports/dashboard",
+      };
+
+      this.$store
+        .dispatch("getDatacontent", fetch)
+        .then((resp) => {
+          console.log(resp.data);
+          this.dashboardData = resp.data.data;
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          // this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
+  },
+  mounted() {
+    this.$store.commit("pgLoading", true);
+
+    this.getContent();
+  },
   created() {},
 };
 </script>
