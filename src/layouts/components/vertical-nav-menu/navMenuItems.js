@@ -18,6 +18,12 @@ export default [
     icon: "TruckIcon",
   },
   {
+    url: "/material-categories",
+    name: "Material Categories",
+    slug: "material-categories",
+    icon: "BoxIcon",
+  },
+  {
     url: "/materials",
     name: "Materials",
     slug: "materials",

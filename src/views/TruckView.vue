@@ -20,7 +20,7 @@
             <div class="p-3">
               <div class="mb-3">
                 <p class="small font-light">Status</p>
-                <h5 v-if="datacontent.status == '1'" class="text-success">
+                <h5 v-if="datacontent.status == '2'" class="text-success">
                   Active
                 </h5>
                 <h5 v-else class="text-danger">InActive</h5>
@@ -40,6 +40,14 @@
               <div class="mb-3">
                 <p class="small font-light">Truck type</p>
                 <h5 class="">{{ datacontent.type }}</h5>
+              </div>
+              <div class="mb-3">
+                <p class="small font-light">Truck Unit</p>
+                <h5 class="">{{ datacontent.si_unit }}</h5>
+              </div>
+              <div class="mb-3">
+                <p class="small font-light">Truck Capacity</p>
+                <h5 class="">{{ datacontent.capacity }}</h5>
               </div>
             </div>
           </vs-card>

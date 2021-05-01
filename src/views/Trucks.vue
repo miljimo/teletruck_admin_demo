@@ -63,6 +63,11 @@
                 <vs-td :data="data[indextr].type">
                   <span class="text-small" v-html="data[indextr].type"></span>
                 </vs-td>
+                <vs-td :data="data[indextr].state">
+                  <span class="text-small">{{
+                    data[indextr].state | capitalize
+                  }}</span>
+                </vs-td>
                 <vs-td :data="data[indextr].plate_number">
                   {{ data[indextr].plate_number }}
                 </vs-td>
@@ -74,12 +79,12 @@
                     class="mr-2 mb-2"
                     >View</vs-button
                   >
-                  <vs-button
+                  <!-- <vs-button
                     @click="deleteItem(data[indextr].id)"
                     size="small"
                     color="dark"
                     >Delete</vs-button
-                  >
+                  > -->
                 </vs-td>
               </vs-tr>
             </template>
@@ -122,6 +127,22 @@
               <vs-select-item value="bad" text="Bad" />
               <vs-select-item value="fair" text="Fair" />
             </vs-select>
+          </div>
+
+          <div class="py-3">
+            <vs-select class="w-full" label="Select Unit" v-model="si_unit">
+              <vs-select-item value="tonne" text="Tonne" />
+              <vs-select-item value="litre" text="Litre" />
+            </vs-select>
+          </div>
+
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              type="number"
+              label-placeholder="Enter Capacity"
+              v-model="capacity"
+            />
           </div>
 
           <div class="py-3">
@@ -192,6 +213,8 @@ export default {
       state: "",
       manager_id: "",
       plate_number: "",
+      capacity: "",
+      si_unit: "",
     };
   },
   watch: {
@@ -312,10 +335,11 @@ export default {
       };
 
       this.$store
-        .dispatch("get", fetch)
+        .dispatch("getContents", fetch)
         .then((resp) => {
           this.managers = resp.data.data.data;
 
+          console.log(this.managers);
           this.$store.commit("pgLoading", false);
         })
         .catch((err) => {
@@ -348,6 +372,8 @@ export default {
       data.append("state", this.state);
       data.append("manager_id", this.manager_id);
       data.append("plate_number", this.plate_number);
+      data.append("capacity", this.capacity);
+      data.append("si_unit", this.si_unit);
 
       let apiData = {
         path: "admin/trucks",

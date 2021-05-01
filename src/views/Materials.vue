@@ -18,7 +18,7 @@
     </div>
 
     <div class="mt-5">
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-md-3">
           <vs-card>
             <div class="p-3">
@@ -54,7 +54,7 @@
             </div>
           </vs-card>
         </div>
-      </div>
+      </div> -->
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
@@ -145,25 +145,18 @@
           </div>
 
           <div class="py-3">
-            <vs-input
-              class="w-full"
-              label-placeholder="Enter material size"
-              v-model="size"
-            />
-          </div>
-
-          <div class="py-3">
             <label class="text-small">Description</label>
             <vs-textarea class="w-full" v-model="description" />
           </div>
 
-          <div class="py-3">
-            <vs-input
-              class="w-full mt-5"
-              label-placeholder="Material price"
-              v-model="price"
-            />
-          </div>
+
+            <vs-select-item
+                v-for="(manager, index) in managers"
+                :key="index"
+                :value="manager.id"
+                :text="`${manager.firstname} ${manager.lastname} `"
+              />
+            </vs-select>
 
           <div class="py-3">
             <vs-input

@@ -63,10 +63,16 @@ const router = new Router({
           component: () => import("./views/TruckView.vue"),
         },
         {
+          path: "/material-categories",
+          name: "material-categories",
+          component: () => import("./views/MaterialCategories.vue"),
+        },
+        {
           path: "/materials",
           name: "materials",
           component: () => import("./views/Materials.vue"),
         },
+
         {
           path: "/material/:id",
           name: "materialView",
