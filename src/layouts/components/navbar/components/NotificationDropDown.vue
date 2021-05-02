@@ -7,7 +7,9 @@
       :badge="unreadNotifications.length"
     />
 
-    <vs-dropdown-menu class="notification-dropdown dropdown-custom vx-navbar-dropdown">
+    <vs-dropdown-menu
+      class="notification-dropdown dropdown-custom vx-navbar-dropdown"
+    >
       <div class="notification-top text-center p-5 bg-primary text-white">
         <h3 class="text-white">{{ unreadNotifications.length }} New</h3>
         <p class="opacity-75">App Notifications</p>
@@ -22,7 +24,7 @@
       >
         <ul class="bordered-items">
           <li
-            v-for="(ntf,index) in unreadNotifications"
+            v-for="(ntf, index) in unreadNotifications"
             :key="index"
             @click="$router.push('/notifications')"
             v-if="index < 5"
@@ -31,17 +33,23 @@
             <div class="flex items-start">
               <feather-icon
                 :icon="ntf.icon"
-                :svgClasses="[`text-${ntf.category}`, 'stroke-current mr-1 h-6 w-6']"
+                :svgClasses="[
+                  `text-${ntf.category}`,
+                  'stroke-current mr-1 h-6 w-6',
+                ]"
               ></feather-icon>
               <div class="mx-2">
                 <span
                   class="font-medium block notification-title"
                   :class="[`text-${ntf.category}`]"
-                >{{ ntf.title | truncate(35) }}</span>
+                  >{{ ntf.title | truncate(35) }}</span
+                >
                 <small>{{ ntf.churchId.email }}</small>
               </div>
             </div>
-            <small class="mt-1 whitespace-no-wrap">{{ elapsedTime(ntf.createdAt) }}</small>
+            <small class="mt-1 whitespace-no-wrap">{{
+              elapsedTime(ntf.createdAt)
+            }}</small>
           </li>
         </ul>
       </component>

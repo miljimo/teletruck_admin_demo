@@ -169,7 +169,7 @@ export default {
       this.$store
         .dispatch("getDatacontent", fetch)
         .then((resp) => {
-          console.log(resp.data);
+          // console.log(resp.data);
           this.dashboardData = resp.data.data;
           this.$store.commit("pgLoading", false);
         })

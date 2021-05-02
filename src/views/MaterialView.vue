@@ -8,14 +8,14 @@
       </div>
       <div class="col-md-4 col-8">
         <div class="text-right">
-          <vs-button color="dark" class="ml-5" type="border">Disable</vs-button>
+          <!-- <vs-button color="dark" class="ml-5" type="border">Disable</vs-button>
           <vs-button
             @click="addData = true"
             color="dark"
             class="ml-5"
             type="filled"
             >Edit Material</vs-button
-          >
+          > -->
         </div>
       </div>
     </div>
@@ -29,17 +29,45 @@
           />
         </div>
         <div class="col-9 col-md-6">
-          <h2 class="mb-3">Coarse Aggragates</h2>
+          <h2 class="mb-3">{{ datacontent.name }}</h2>
           <p class="font-light">
-            Broad category of coarse- to medium-grained particulate material
-            used in construction, including sand, gravel, crushed stone, slag,
-            recycled concrete and geosynthetic aggregates.
+            {{ datacontent.description }}
           </p>
           <div class="mt-5">
-            <p class="mb-2">Sizes</p>
-            <vs-chip class="mr-2"> 15mm Granite </vs-chip>
-            <vs-chip class="mr-2"> 10mm Granite </vs-chip>
-            <vs-chip class="mr-2"> 20mm Granite </vs-chip>
+            <p class="mb-2">
+              <span class="font-bold">Category -</span>
+              <span v-if="datacontent.category">{{
+                datacontent.category.name
+              }}</span
+              >,
+              <span class="font-bold">Unit -</span>
+              <span v-if="datacontent.category">{{
+                datacontent.category.si_unit
+              }}</span>
+            </p>
+
+            <div v-if="datacontent.category">
+              <p
+                class="mb-2"
+                style="
+                  font-size: 12px;
+                  text-transform: uppercase;
+                  margin-top: 25px;
+                "
+              >
+                Pricing
+              </p>
+              <vs-chip
+                v-for="(pricing, index) in datacontent.category.pricing"
+                :key="index"
+                class="mr-2"
+              >
+                <span class="font-bold pr-1">Size - </span>
+                {{ pricing.size }} -
+                <span class="font-bold pr-1">Price - </span>
+                {{ pricing.price | currency("₦", 0) }}
+              </vs-chip>
+            </div>
           </div>
         </div>
       </div>
@@ -129,28 +157,16 @@
       <div>
         <form action="">
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="First name"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="First name" />
           </div>
           <div class="my-3">
-            <vs-input class="w-full" placeholder="Last name" v-model="value1" />
+            <vs-input class="w-full" placeholder="Last name" />
           </div>
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="Email address"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="Email address" />
           </div>
           <div class="my-3">
-            <vs-input
-              class="w-full"
-              placeholder="Phone number"
-              v-model="value1"
-            />
+            <vs-input class="w-full" placeholder="Phone number" />
           </div>
           <div class="mt-10">
             <vs-button color="dark" class="w-full my-3" type="filled"
@@ -173,12 +189,14 @@ export default {
     },
   },
   mounted() {
+    this.getData();
     this.getBl();
   },
   data() {
     return {
       contents: [],
       addData: false,
+      datacontent: "",
       table_options: {
         current_page: 1,
       },
@@ -191,6 +209,40 @@ export default {
     },
   },
   methods: {
+    getData() {
+      this.$store.commit("pgLoading", true);
+      let fetch = {
+        path: `admin/materials/${this.$route.params.id}`,
+      };
+      this.$store
+        .dispatch("getContentsDetail", fetch)
+        .then((resp) => {
+          // console.log(resp.data.data);
+          this.datacontent = resp.data.data;
+          // console.log(this.datacontent);
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
     deleteItem(id) {
       this.delAct = id;
       this.$vs.dialog({

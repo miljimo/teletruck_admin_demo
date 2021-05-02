@@ -35,7 +35,6 @@
               <vs-th> Name </vs-th>
               <vs-th> Unit </vs-th>
               <vs-th> Pricing </vs-th>
-
               <vs-th> Action </vs-th>
             </template>
 

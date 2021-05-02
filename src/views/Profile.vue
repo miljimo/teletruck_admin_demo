@@ -88,7 +88,11 @@
             <vs-button color="dark" class="w-full my-3" type="filled"
               >Change password</vs-button
             >
-            <vs-button color="dark" class="w-full mb-2" type="flat"
+            <vs-button
+              @click="changepassword = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
               >Cancel</vs-button
             >
           </div>
@@ -128,9 +132,13 @@
 
           <div class="mt-10">
             <vs-button color="dark" class="w-full my-3" type="filled"
-              >Change password</vs-button
+              >Edit Profile</vs-button
             >
-            <vs-button color="dark" class="w-full mb-2" type="flat"
+            <vs-button
+              @click="editprofile = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
               >Cancel</vs-button
             >
           </div>

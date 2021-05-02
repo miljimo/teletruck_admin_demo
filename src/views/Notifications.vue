@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="vx-card" style="max-width: 600px; margin: 0 auto">
+    <div
+      v-if="!loading"
+      class="vx-card"
+      style="max-width: 600px; margin: 0 auto"
+    >
       <div class="vx-card__header">
         <div class="vx-card__title" style="width: 100%">
           <div class="vs-row w-full">
@@ -25,7 +29,7 @@
             <li
               class="cursor-pointer"
               @click="ReadNotification(ntf, index)"
-              v-for="(ntf, index) in Notifications"
+              v-for="(ntf, index) in contents"
               :key="index"
             >
               <div class="timeline-info">
@@ -38,6 +42,9 @@
               }}</small>
               <hr class="opacity-25 my-5" />
             </li>
+            <p class="my-5 py-3" v-if="contents.length == 0">
+              No Notification right now
+            </p>
           </ul>
         </div>
         <!---->
@@ -77,6 +84,11 @@
 </template>
 <script>
 export default {
+  computed: {
+    loading() {
+      return this.$store.getters.pgLoading;
+    },
+  },
   data() {
     return {
       Notifications: [
@@ -84,15 +96,8 @@ export default {
           title: "Notification Title 1 here",
           createdAt: "12 March 2020",
         },
-        {
-          title: "Notification Title 2 here",
-          createdAt: "12 March 2020",
-        },
-        {
-          title: "Notification Title 3 here",
-          createdAt: "12 March 2020",
-        },
       ],
+      contents: "",
       notificationPopUp: false,
       prevNotif: {},
       churchEmail: "",
@@ -100,9 +105,47 @@ export default {
   },
   mounted() {
     // this.openLoadingInDiv();
+    this.$store.commit("pgLoading", true);
+
+    this.getContent();
     // this.getNotifications();
   },
   methods: {
+    getContent() {
+      let fetch = {
+        path: "notifications",
+      };
+
+      this.$store
+        .dispatch("getContents", fetch)
+        .then((resp) => {
+          console.log(resp.data.data);
+          this.contents = resp.data.data;
+
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
     clearNotification(id) {
       this.notificationPopUp = false;
       this.openLoadingInDiv();

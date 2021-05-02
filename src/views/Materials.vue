@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Materials (12)</h3>
+        <h3 class="font-bold d-inline">Materials</h3>
       </div>
       <div class="col-md-3 col-8">
         <div class="text-right">
@@ -58,7 +58,7 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.total }})</p>
+            <p class="font-bold lead">All</p>
           </div>
 
           <vs-table
@@ -69,9 +69,10 @@
           >
             <template slot="thead">
               <vs-th> Created </vs-th>
-              <vs-th> Full name </vs-th>
-              <vs-th> Email address </vs-th>
-              <vs-th> Phone</vs-th>
+              <vs-th> Name </vs-th>
+              <vs-th> Category </vs-th>
+              <vs-th> SI Unit </vs-th>
+              <vs-th> Pricing</vs-th>
               <vs-th> Action </vs-th>
             </template>
 
@@ -84,40 +85,52 @@
                       .format("dddd, MMM Do 'YY")
                   }}
                 </vs-td>
-                <vs-td :data="data[indextr].firstname">
-                  <router-link
-                    :to="`/view-profile/${data[indextr].id}`"
-                    class="font-bold"
-                    style="align-items: center; display: flex"
+                <vs-td :data="data[indextr].name">
+                  <span
+                    @click="viewAllPrices(data[indextr])"
+                    class="font-bold text-primary"
                   >
-                    <vs-avatar
-                      class="mr-2"
-                      :src="data[indextr].profile_photo_url"
-                    />
-                    {{ data[indextr].firstname }}
-                    {{ data[indextr].lastname }}</router-link
+                    {{ data[indextr].name }}</span
                   >
                 </vs-td>
 
-                <vs-td :data="data[indextr].email">
-                  <span class="text-small" v-html="data[indextr].email"></span>
+                <vs-td
+                  v-if="data[indextr].category"
+                  :data="data[indextr].category.name"
+                >
+                  <span class="text-small">
+                    {{ data[indextr].category.name | capitalize }}
+                  </span>
                 </vs-td>
-                <vs-td :data="data[indextr].phone">
-                  {{ data[indextr].phone }}
+
+                <vs-td
+                  v-if="data[indextr].category"
+                  :data="data[indextr].category.si_unit"
+                >
+                  <span class="text-small">
+                    {{ data[indextr].category.si_unit | capitalize }}
+                  </span>
+                </vs-td>
+
+                <vs-td v-if="data[indextr].category">
+                  <span class="text-small">
+                    {{ data[indextr].category.pricing.length | capitalize }}
+                    Prices
+                  </span>
                 </vs-td>
 
                 <vs-td>
                   <vs-button
-                    :to="`/view-profile/${data[indextr].id}`"
+                    @click="viewAllPrices(data[indextr].category)"
                     size="small"
                     class="mr-2 mb-2"
-                    >View</vs-button
+                    >View Prices</vs-button
                   >
                   <vs-button
-                    @click="deleteItem(data[indextr].id)"
+                    :to="`/material/${data[indextr].id}`"
                     size="small"
                     color="dark"
-                    >Disable</vs-button
+                    >View Material</vs-button
                   >
                 </vs-td>
               </vs-tr>
@@ -194,6 +207,58 @@
         </form>
       </div>
     </vs-popup>
+
+    <vs-popup
+      class="addPopup"
+      :title="`Pricing for ${viewPreview.name}`"
+      :active.sync="previewPop"
+    >
+      <div>
+        <div class="py-3">
+          <div
+            v-for="(pricing, index) in viewPreview.pricing"
+            :key="index"
+            style="
+              border-bottom: 1px solid gainsboro;
+              padding-bottom: 6px;
+              margin-bottom: 16px;
+            "
+          >
+            <div class="row">
+              <div class="col-md-7">
+                <p class="text-small mb-1 text-gray">
+                  Size - {{ pricing.size }}
+                </p>
+                <p>{{ pricing.price | currency("₦", 0) }}</p>
+              </div>
+              <div class="col-md-5">
+                <div class="text-right">
+                  <!-- <vs-button
+                    @click="removePricing(pricing.id)"
+                    size="small"
+                    color="dark"
+                    class="mr-2 mb-2"
+                    type="border"
+                  >
+                    Remove
+                  </vs-button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10">
+          <vs-button
+            @click="previewPop = false"
+            color="dark"
+            class="w-full mb-2"
+            type="flat"
+            >Cancel</vs-button
+          >
+        </div>
+      </div>
+    </vs-popup>
   </div>
 </template>
 <script>
@@ -210,6 +275,7 @@ export default {
   data() {
     return {
       contents: [],
+      categories: [],
       trucktype: "",
       addData: false,
       table_options: {
@@ -222,6 +288,8 @@ export default {
       price: "",
       images: [],
       category_id: "",
+      previewPop: false,
+      viewPreview: {},
     };
   },
   watch: {
@@ -230,6 +298,11 @@ export default {
     },
   },
   methods: {
+    viewAllPrices(category) {
+      this.previewPop = true;
+      this.viewPreview = category;
+      console.log(category);
+    },
     getCategories() {
       let fetch = {
         path: "/admin/materials/category",
@@ -239,7 +312,7 @@ export default {
         .dispatch("getContents", fetch)
         .then((resp) => {
           this.categories = resp.data.data;
-          // console.log(resp.data.data);
+
           this.$store.commit("pgLoading", false);
         })
         .catch((err) => {
@@ -372,13 +445,11 @@ export default {
         });
     },
     addImages(event) {
-      console.log(event.target.files);
-      this.images = event.target.files;
-      // for (var i = 0; i < event.target.files.length; ++i) {
-      //   console.log(event.target.files[i]);
-      //   this.images.push(event.target.files[i]);
-      // }
-      // console.log(this.images);
+      // console.log(event.target.files);
+      // this.images = event.target.files;
+      for (var i = 0; i < event.target.files.length; ++i) {
+        this.images.push(event.target.files[i]);
+      }
     },
     submitForm() {
       this.$vs.loading();
@@ -386,7 +457,10 @@ export default {
       data.append("name", this.name);
       data.append("description", this.description);
       data.append("category_id", this.category_id);
-      data.append("images", this.images);
+      // data.append("images[]", this.images);
+      for (let i = 0; i < this.images.length; i++) {
+        data.append("images[]", this.images[i]);
+      }
 
       let apiData = {
         path: "admin/materials",

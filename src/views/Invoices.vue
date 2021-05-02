@@ -236,7 +236,7 @@ export default {
         .dispatch("getContents", fetch)
         .then((resp) => {
           this.contents = resp.data.data;
-
+          // console.log(this.contents);
           if (divLoad) {
             this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           }
