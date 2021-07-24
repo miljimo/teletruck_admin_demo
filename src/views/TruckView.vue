@@ -1,13 +1,19 @@
 <template>
   <div v-if="!loading">
     <div class="row">
-      <div class="col-md-8 col-4">
+      <div class="col-md-4 col-4">
         <vs-button @click="$router.go(-1)" color="dark" type="flat"
           >← Back</vs-button
         >
       </div>
-      <div class="col-md-4 col-8">
+      <div class="col-md-8 col-8">
         <div class="text-right">
+            <vs-button
+            @click="updateTrack = true"
+            color="dark"
+            class="ml-5"
+            >Update Device ID</vs-button
+          >
           <vs-button color="dark" class="ml-5" type="border">Disable</vs-button>
         </div>
       </div>
@@ -48,6 +54,10 @@
               <div class="mb-3">
                 <p class="small font-light">Truck Capacity</p>
                 <h5 class="">{{ datacontent.capacity }}</h5>
+              </div>
+              <div class="mb-3">
+                <p class="small font-light">Device ID</p>
+                <h5 class="">{{ datacontent.device_id }}</h5>
               </div>
             </div>
           </vs-card>
@@ -132,6 +142,40 @@
         </form>
       </div>
     </vs-popup>
+
+    <vs-popup
+      class="addPopup"
+      :title="`Update Tracker ID for ${datacontent.name}`"
+      :active.sync="updateTrack"
+    >
+      <div>
+        <form @submit.prevent="submitFormTrackID">
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Enter tracker ID"
+              v-model="device_id"
+            />
+          </div>
+          <div class="mt-10">
+            <vs-button
+              @click="submitFormTrackID"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
+              >Update track ID</vs-button
+            >
+            <vs-button
+              @click="updateTrack = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
+              >Cancel</vs-button
+            >
+          </div>
+        </form>
+      </div>
+    </vs-popup>
   </div>
 </template>
 <script>
@@ -149,7 +193,9 @@ export default {
     return {
       contents: [],
       datacontent: {},
+      device_id: "",
       addData: false,
+      updateTrack: false,
       table_options: {
         current_page: 1,
       },
@@ -162,6 +208,55 @@ export default {
     },
   },
   methods: {
+    submitFormTrackID() {
+      this.$vs.loading();
+      let data = {
+        id: this.datacontent.id,
+        device_id: this.device_id,
+      };
+
+      let apiData = {
+        path: "admin/trucks/device-id",
+        data,
+      };
+      this.$store
+        .dispatch("update", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Tracker ID Update",
+            text: "Successfully updated tracker ID",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Tracker ID Update",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Tracker ID Update",
+              text: "Unable to Update tracker ID",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+        });
+    },
     getData() {
       this.$store.commit("pgLoading", true);
       let fetch = {

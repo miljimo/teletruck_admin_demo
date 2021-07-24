@@ -35,9 +35,8 @@
               <vs-th> Title </vs-th>
               <vs-th> Truck type </vs-th>
               <vs-th> Truck State </vs-th>
-
               <vs-th> Plate number </vs-th>
-              <!-- <vs-th> Manager </vs-th> -->
+              <vs-th> Device ID </vs-th>
               <vs-th> Action </vs-th>
             </template>
 
@@ -71,7 +70,9 @@
                 <vs-td :data="data[indextr].plate_number">
                   {{ data[indextr].plate_number }}
                 </vs-td>
-
+                <vs-td :data="data[indextr].device_id">
+                  {{ data[indextr].device_id }}
+                </vs-td>
                 <vs-td>
                   <vs-button
                     :to="`/truck/${data[indextr].id}`"
@@ -79,12 +80,12 @@
                     class="mr-2 mb-2"
                     >View</vs-button
                   >
-                  <!-- <vs-button
-                    @click="deleteItem(data[indextr].id)"
+                  <vs-button
+                    @click="updateTrackID(data[indextr])"
                     size="small"
                     color="dark"
-                    >Delete</vs-button
-                  > -->
+                    >Update Device ID
+                  </vs-button>
                 </vs-td>
               </vs-tr>
             </template>
@@ -185,6 +186,40 @@
         </form>
       </div>
     </vs-popup>
+
+    <vs-popup
+      class="addPopup"
+      :title="`Update Tracker ID for ${activeTruck.name}`"
+      :active.sync="updateTrack"
+    >
+      <div>
+        <form @submit.prevent="submitFormTrackID">
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Enter tracker ID"
+              v-model="device_id"
+            />
+          </div>
+          <div class="mt-10">
+            <vs-button
+              @click="submitFormTrackID"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
+              >Update track ID</vs-button
+            >
+            <vs-button
+              @click="updateTrack = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
+              >Cancel</vs-button
+            >
+          </div>
+        </form>
+      </div>
+    </vs-popup>
   </div>
 </template>
 <script>
@@ -215,6 +250,9 @@ export default {
       plate_number: "",
       capacity: "",
       si_unit: "",
+      activeTruck: {},
+      updateTrack: false,
+      device_id: "",
     };
   },
   watch: {
@@ -232,6 +270,10 @@ export default {
         text: `Are you sure you want to delete this content`,
         accept: this.deleteFunc,
       });
+    },
+    updateTrackID(truck) {
+      this.updateTrack = true;
+      this.activeTruck = truck;
     },
     deleteFunc() {
       this.$vs.loading({
@@ -362,6 +404,55 @@ export default {
             });
           }
           this.$store.commit("pgLoading", false);
+        });
+    },
+    submitFormTrackID() {
+      this.$vs.loading();
+      let data = {
+        id: this.activeTruck.id,
+        device_id: this.device_id,
+      };
+
+      let apiData = {
+        path: "admin/trucks/device-id",
+        data,
+      };
+      this.$store
+        .dispatch("update", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+
+          this.$vs.notify({
+            title: "Tracker ID Update",
+            text: "Successfully updated tracker ID",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close();
+          if (err.response) {
+            this.$vs.notify({
+              title: "Tracker ID Update",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Tracker ID Update",
+              text: "Unable to Update tracker ID",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
         });
     },
     submitForm() {
