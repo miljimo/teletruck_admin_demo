@@ -79,6 +79,11 @@ const router = new Router({
           component: () => import("./views/MaterialView.vue"),
         },
         {
+          path: "/orders",
+          name: "orders",
+          component: () => import("./views/Orders.vue"),
+        },
+        {
           path: "/wallet",
           name: "wallet",
           component: () => import("./views/Wallet.vue"),

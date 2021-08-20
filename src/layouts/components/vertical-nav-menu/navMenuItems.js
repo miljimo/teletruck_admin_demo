@@ -30,6 +30,12 @@ export default [
     icon: "BoxIcon",
   },
   {
+    url: "/orders",
+    name: "Orders",
+    slug: "orders",
+    icon: "ShoppingCartIcon",
+  },
+  {
     url: "/wallet",
     name: "Wallet",
     slug: "wallet",

@@ -2,59 +2,14 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Materials</h3>
+        <h3 class="font-bold d-inline">Orders</h3>
       </div>
       <div class="col-md-3 col-8">
-        <div class="text-right">
-          <vs-button
-            @click="addData = true"
-            color="dark"
-            class="ml-5"
-            type="filled"
-            >Add New</vs-button
-          >
-        </div>
+        <div class="text-right"></div>
       </div>
     </div>
 
     <div class="mt-5">
-      <!-- <div class="row">
-        <div class="col-md-3">
-          <vs-card>
-            <div class="p-3">
-              <div class="row">
-                <div class="col-9">
-                  <h4 class="font-bold">23</h4>
-                  <p class="mt-3">Total Materials</p>
-                </div>
-                <div class="col-3">
-                  <h4>
-                    <feather-icon class="mr-1" icon="BoxIcon" />
-                  </h4>
-                </div>
-              </div>
-            </div>
-          </vs-card>
-        </div>
-
-        <div class="col-md-3">
-          <vs-card>
-            <div class="p-3">
-              <div class="row">
-                <div class="col-9">
-                  <h4 class="font-bold">Graphites</h4>
-                  <p class="mt-3">Total Selling</p>
-                </div>
-                <div class="col-3">
-                  <h4>
-                    <feather-icon class="mr-1" icon="TrendingUpIcon" />
-                  </h4>
-                </div>
-              </div>
-            </div>
-          </vs-card>
-        </div>
-      </div> -->
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
@@ -121,16 +76,10 @@
 
                 <vs-td>
                   <vs-button
-                    @click="viewAllPrices(data[indextr].category)"
+                    @click="viewDetails(data[indextr].category)"
                     size="small"
                     class="mr-2 mb-2"
                     >View Prices</vs-button
-                  >
-                  <vs-button
-                    :to="`/material/${data[indextr].id}`"
-                    size="small"
-                    color="dark"
-                    >View Material</vs-button
                   >
                 </vs-td>
               </vs-tr>
@@ -298,101 +247,11 @@ export default {
     },
   },
   methods: {
-    viewAllPrices(category) {
+    viewDetails(category) {
       this.previewPop = true;
       this.viewPreview = category;
     },
-    getCategories() {
-      let fetch = {
-        path: "/admin/materials/category",
-      };
 
-      this.$store
-        .dispatch("getContents", fetch)
-        .then((resp) => {
-          this.categories = resp.data.data;
-
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Data",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Data",
-              text: "Unable to get Data",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
-    },
-    deleteItem(id) {
-      this.delAct = id;
-      this.$vs.dialog({
-        type: "confirm",
-        color: "danger",
-        title: `Confirm Delete`,
-        text: `Are you sure you want to delete this content`,
-        accept: this.deleteFunc,
-      });
-    },
-    deleteFunc() {
-      this.$vs.loading({
-        container: "#div-with-loading",
-        scale: 0.6,
-      });
-      let contID = this.delAct;
-      this.$store
-        .dispatch("delContent", contID)
-        .then((resp) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-
-          this.contents.records.splice(
-            this.contents.records.findIndex(function (i) {
-              return i.id === contID;
-            }),
-            1
-          );
-
-          this.$vs.notify({
-            icon: "error",
-            color: "dark",
-            position: "bottom-center",
-            title: "Content deleted",
-            text: "Content was successfully deleted",
-          });
-        })
-        .catch((err) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Delete content",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Delete content",
-              text: "Unable to delete this content",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-        });
-    },
     getBl() {
       this.$store.commit("pgLoading", true);
       this.getContents(false);
@@ -405,14 +264,13 @@ export default {
         });
       }
       let fetch = {
-        path: "admin/materials",
+        path: "admin/orders",
         pageNo: this.table_options.current_page,
       };
 
       this.$store
         .dispatch("getContents", fetch)
         .then((resp) => {
-          // console.log(resp.data.data);
           this.contents = resp.data.data;
 
           if (divLoad) {
