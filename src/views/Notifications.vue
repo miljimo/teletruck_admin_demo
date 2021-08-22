@@ -275,38 +275,37 @@ export default {
         .catch((err) => {});
     },
     getNotifications() {
+      let fetch = {
+        path: "notifications",
+      };
+
       this.$store
-        .dispatch("getNotifications")
+        .dispatch("getContents", fetch)
         .then((resp) => {
           this.Notifications = resp.data.data;
 
-          console.log(this.Notifications);
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          this.$store.commit("pgLoading", false);
         })
         .catch((err) => {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
           if (err.response) {
-            if (err.response.status == 400) {
-              console.log(err.response.data);
-              this.$vs.notify({
-                title: "Load Notifications",
-                text: err.response.data,
-                color: "warning",
-              });
-            } else {
-              this.$vs.notify({
-                title: "Load Notifications",
-                text: "Unable to Load Notifications, try again!",
-                color: "warning",
-              });
-            }
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
           } else {
             this.$vs.notify({
-              title: "Load Notifications",
-              text: "Unable to Load Notifications, try again!",
-              color: "warning",
+              title: "Get Data",
+              text: "Unable to get Notifications",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
             });
           }
+          this.$store.commit("pgLoading", false);
         });
     },
     openLoadingInDiv() {

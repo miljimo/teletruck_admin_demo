@@ -21,7 +21,7 @@
               </div>
             </vs-card>
           </div>
-          <hr class="my-5 opacity-25" />
+          <!-- <hr class="my-5 opacity-25" />
           <vs-button @click="fundWallet" color="dark" class="ml-5" type="filled"
             >Fund Wallet</vs-button
           >
@@ -31,7 +31,7 @@
             class="ml-5"
             type="border"
             >Make Withdrawal</vs-button
-          >
+          > -->
         </div>
       </div>
       <div class="col-md-7">
@@ -56,10 +56,16 @@
                 v-for="(transaction, index) in walletData.transactions"
                 :key="index"
                 class="px-0 my-3"
-                title="Paid out #55,800 to Account Buba"
-                subtitle="Apr 28 at 22:45"
+                :title="`${transaction.meta.user} - ${transaction.meta.description}`"
+                :subtitle="
+                  moment
+                    .utc(new Date(transaction.created_at))
+                    .format('dddd, MMM Do YY')
+                "
               >
-                <p class="text-gray text-small">- 55,800.00</p>
+                <p class="text-gray text-small">
+                  {{ transaction.amount | currency("₦", 0) }}
+                </p>
               </vs-list-item>
             </vs-list>
           </vs-tab>
@@ -72,10 +78,16 @@
                 v-for="(transaction, index) in walletData.payouts"
                 :key="index"
                 class="px-0 my-3"
-                title="Paid out #55,800 to Account Buba"
-                subtitle="Apr 28 at 22:45"
+                :title="`${transaction.meta.user} - ${transaction.meta.description}`"
+                :subtitle="
+                  moment
+                    .utc(new Date(transaction.created_at))
+                    .format('dddd, MMM Do YY')
+                "
               >
-                <p class="text-gray text-small">- 55,800.00</p>
+                <p class="text-gray text-small">
+                  {{ transaction.amount | currency("₦", 0) }}
+                </p>
               </vs-list-item>
             </vs-list>
           </vs-tab>
@@ -93,7 +105,7 @@ export default {
     return {
       filter1: "All",
       selDate: "",
-      walletData: "",
+      walletData: {},
     };
   },
   methods: {},

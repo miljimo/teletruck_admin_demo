@@ -18,10 +18,20 @@ import "quill/dist/quill.bubble.css"; // for bubble theme
 Vue.use(VueQuillEditor /* { default global options } */);
 import VueYouTubeEmbed from "vue-youtube-embed";
 
+import * as VueGoogleMaps from "vue2-google-maps";
+
 import VueCryptojs from "vue-cryptojs";
 Vue.use(VueCryptojs);
 Vue.use(Vue2Filters);
 Vue.use(VueYouTubeEmbed);
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyDGBlj7ahb_7eIww1hZW7MhD0sfKS-Vuvc",
+    libraries: "places", // This is required if you use the Autocomplete plugin
+  },
+  installComponents: true,
+});
 
 // axios
 // import axios from './axios.js'

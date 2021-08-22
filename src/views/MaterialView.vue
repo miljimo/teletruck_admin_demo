@@ -23,10 +23,7 @@
     <div class="mt-5">
       <div class="row mb-10">
         <div class="col-3 col-md-2">
-          <vs-avatar
-            size="150px"
-            src="https://geologyscience.com/wp-content/uploads/2019/06/Graphite2.jpg"
-          />
+          <vs-avatar size="150px" :src="datacontent.images[0].file_url" />
         </div>
         <div class="col-9 col-md-6">
           <h2 class="mb-3">{{ datacontent.name }}</h2>

@@ -37,14 +37,20 @@
           </vs-list-item>
           <vs-list>
             <vs-list-item
-              v-for="(order, index) in dashboardData.transactions"
+              v-for="(transaction, index) in dashboardData.transactions"
               :key="index"
-              v-if="index <= 2"
               class="px-0 my-3"
-              title="Paid out #55,800 to Account Buba"
-              subtitle="Apr 28 at 22:45"
+              v-if="index <= 5"
+              :title="`${transaction.meta.user} - ${transaction.meta.description}`"
+              :subtitle="
+                moment
+                  .utc(new Date(transaction.created_at))
+                  .format('dddd, MMM Do YY')
+              "
             >
-              <p class="text-gray text-small">- 55,800.00</p>
+              <p class="text-gray text-small">
+                {{ transaction.amount | currency("₦", 0) }}
+              </p>
             </vs-list-item>
           </vs-list>
         </div>

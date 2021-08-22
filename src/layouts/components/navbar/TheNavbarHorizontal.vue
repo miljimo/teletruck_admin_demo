@@ -16,7 +16,7 @@
           <span class="vx-logo-text text-primary">Teletruck</span>
         </router-link>
 
-        <search-bar class="mr-4" />
+        <!-- <search-bar class="mr-4" /> -->
 
         <notification-drop-down />
 

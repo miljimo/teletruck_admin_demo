@@ -55,7 +55,20 @@
       </component>
 
       <div
-        class="checkout-footer fixed bottom-0 rounded-b-lg text-primary w-full p-2 font-semibold text-center border border-b-0 border-l-0 border-r-0 border-solid d-theme-border-grey-light cursor-pointer"
+        class="
+          checkout-footer
+          fixed
+          bottom-0
+          rounded-b-lg
+          text-primary
+          w-full
+          p-2
+          font-semibold
+          text-center
+          border border-b-0 border-l-0 border-r-0 border-solid
+          d-theme-border-grey-light
+          cursor-pointer
+        "
         @click="$router.push('/notifications')"
       >
         <span>View All Notifications</span>
@@ -90,13 +103,37 @@ export default {
   },
   methods: {
     getNotifications() {
+      let fetch = {
+        path: "notifications",
+      };
       this.$store
-        .dispatch("getNotifications")
+        .dispatch("getContents", fetch)
         .then((resp) => {
           this.unreadNotifications = resp.data.data;
-          console.log(this.unreadNotifications);
+
+          this.$store.commit("pgLoading", false);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Notifications",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
     },
     elapsedTime(startTime) {
       const x = new Date(startTime);
