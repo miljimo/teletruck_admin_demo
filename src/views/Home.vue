@@ -16,16 +16,18 @@
               >
                 <div>
                   <p class="mb-2 mt-5 text-white opacity-10">Total Wallet</p>
-                  <h3 class="font-bold mb-0 text-white">N6,390.68</h3>
+                  <h3 class="font-bold mb-0 text-white">
+                    {{ walletData.balance | currency("₦", 0) }}
+                  </h3>
                 </div>
               </vs-card>
             </vs-tab>
-            <vs-tab label="Withdrawal">
+            <!-- <vs-tab label="Withdrawal">
               <div class="con-tab-ejemplo">Service</div>
             </vs-tab>
             <vs-tab label="Balance">
               <div class="con-tab-ejemplo">login</div>
-            </vs-tab>
+            </vs-tab> -->
           </vs-tabs>
           <hr class="my-5 opacity-25" />
           <vs-list-item title="Transactions">
@@ -131,15 +133,14 @@
               v-for="(order, index) in dashboardData.recent_orders"
               :key="index"
               class="px-0 my-3"
-              title="Makin made an Order for Granite"
-              subtitle="Apr 28 at 22:45"
+              :title="`${order.material.name}, Total amount - ${order.total_amount} `"
+              :subtitle="`${order.order_status_text} - ${moment
+                .utc(new Date(order.created_at))
+                .format('dddd, MMM Do YY')}`"
             >
-              <vs-button color="success" class="ml-5" size="small"
+              <!-- <vs-button color="success" class="ml-5" size="small"
                 >Accept Order</vs-button
-              >
-              <vs-button color="danger" type="border" class="ml-2" size="small"
-                >Decline Order</vs-button
-              >
+              > -->
             </vs-list-item>
           </vs-list>
         </div>
@@ -153,6 +154,7 @@ export default {
   data() {
     return {
       dashboardData: {},
+      walletData: {},
     };
   },
   computed: {
@@ -195,10 +197,43 @@ export default {
           this.$store.commit("pgLoading", false);
         });
     },
+    getWallet() {
+      let fetch = {
+        path: "wallet",
+      };
+
+      this.$store
+        .dispatch("getDatacontent", fetch)
+        .then((resp) => {
+          this.walletData = resp.data.data;
+          this.$store.commit("pgLoading", false);
+        })
+        .catch((err) => {
+          // this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Get Data",
+              text: "Unable to get Wallet data",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
   },
   mounted() {
     this.$store.commit("pgLoading", true);
-
+    this.getWallet();
     this.getContent();
   },
   created() {},

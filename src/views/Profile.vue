@@ -32,12 +32,12 @@
               </div>
 
               <div class="mt-10">
-                <vs-button
+                <!-- <vs-button
                   @click="editprofile = true"
                   color="dark"
                   type="filled"
                   >Edit profile</vs-button
-                >
+                > -->
                 <vs-button
                   @click="changepassword = true"
                   color="dark"
@@ -64,7 +64,7 @@
               class="w-full"
               type="password"
               placeholder="Current password"
-              v-model="value1"
+              v-model="form.current_password"
             />
           </div>
           <div class="my-3">
@@ -72,7 +72,7 @@
               class="w-full"
               type="password"
               placeholder="New password"
-              v-model="value1"
+              v-model="form.password"
             />
           </div>
           <div class="my-3">
@@ -80,12 +80,16 @@
               class="w-full"
               type="password"
               placeholder="Confirm new password"
-              v-model="value1"
+              v-model="form.password_confirmation"
             />
           </div>
 
           <div class="mt-10">
-            <vs-button color="dark" class="w-full my-3" type="filled"
+            <vs-button
+              @click="changePasswordForm"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
               >Change password</vs-button
             >
             <vs-button
@@ -171,9 +175,73 @@ export default {
         current_page: 1,
       },
       delAct: "",
+      form: {
+        current_password: "",
+        password: "",
+        password_confirmation: "",
+      },
     };
   },
 
-  methods: {},
+  methods: {
+    changePasswordForm() {
+      if (this.form.password == this.form.password_confirmation) {
+        this.$vs.loading();
+        let data = this.form;
+
+        let apiData = {
+          path: "profile/update/password",
+          data,
+        };
+        this.$store
+          .dispatch("create", apiData)
+          .then((resp) => {
+            this.$vs.loading.close();
+
+            this.$vs.notify({
+              title: "Password update",
+              text: "Successfully updated password",
+              color: "success",
+              icon: "verified_user",
+              position: "bottom-center",
+            });
+
+            setTimeout(() => {
+              this.$store.dispatch("logout").then(() => {
+                this.$router.push("/login");
+              });
+            }, 1000);
+          })
+          .catch((err) => {
+            this.$vs.loading.close();
+            if (err.response) {
+              this.$vs.notify({
+                title: "Password update",
+                text: err.response.data.message,
+                color: "warning",
+                icon: "error",
+                position: "bottom-center",
+              });
+            } else {
+              this.$vs.notify({
+                title: "Password update",
+                text: "Unable to update password",
+                color: "dark",
+                icon: "error",
+                position: "bottom-center",
+              });
+            }
+          });
+      } else {
+        this.$vs.notify({
+          title: "Password mismatch",
+          text: "Check the password and try again",
+          color: "dark",
+          icon: "error",
+          position: "bottom-center",
+        });
+      }
+    },
+  },
 };
 </script>

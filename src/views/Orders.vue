@@ -24,10 +24,10 @@
           >
             <template slot="thead">
               <vs-th> Created </vs-th>
-              <vs-th> Name </vs-th>
-              <vs-th> Category </vs-th>
-              <vs-th> SI Unit </vs-th>
-              <vs-th> Pricing</vs-th>
+              <vs-th> Order ID </vs-th>
+              <vs-th> Material </vs-th>
+              <vs-th> Manager </vs-th>
+              <vs-th> Owner</vs-th>
               <vs-th> Action </vs-th>
             </template>
 
@@ -40,47 +40,61 @@
                       .format("dddd, MMM Do 'YY")
                   }}
                 </vs-td>
-                <vs-td :data="data[indextr].name">
-                  <span
-                    @click="viewAllPrices(data[indextr])"
-                    class="font-bold text-primary"
-                  >
-                    {{ data[indextr].name }}</span
+                <vs-td :data="data[indextr].order_number">
+                  <span class="font-bold text-primary">
+                    {{ data[indextr].order_number }}</span
                   >
                 </vs-td>
 
                 <vs-td
-                  v-if="data[indextr].category"
-                  :data="data[indextr].category.name"
+                  v-if="data[indextr].material"
+                  :data="data[indextr].material.name"
                 >
                   <span class="text-small">
-                    {{ data[indextr].category.name | capitalize }}
+                    {{ data[indextr].material.name | capitalize }}
                   </span>
                 </vs-td>
 
                 <vs-td
-                  v-if="data[indextr].category"
-                  :data="data[indextr].category.si_unit"
+                  v-if="data[indextr].manager"
+                  :data="data[indextr].manager.firstname"
                 >
-                  <span class="text-small">
-                    {{ data[indextr].category.si_unit | capitalize }}
-                  </span>
+                  <router-link
+                    :to="`/view-profile/${data[indextr].manager.id}`"
+                  >
+                    <span class="text-small">
+                      {{ data[indextr].manager.firstname | capitalize }}
+                      {{ data[indextr].manager.lastname | capitalize }}
+                    </span>
+                  </router-link>
                 </vs-td>
 
-                <vs-td v-if="data[indextr].category">
+                <vs-td
+                  v-if="data[indextr].owner"
+                  :data="data[indextr].owner.firstname"
+                >
                   <span class="text-small">
-                    {{ data[indextr].category.pricing.length | capitalize }}
-                    Prices
+                    {{ data[indextr].owner.firstname | capitalize }}
+                    {{ data[indextr].owner.lastname | capitalize }}
                   </span>
                 </vs-td>
 
                 <vs-td>
-                  <vs-button
+                  <a
+                    v-if="data[indextr].invoice"
+                    :href="data[indextr].invoice.file_url"
+                    download
+                    target="_blank"
+                    size="small"
+                    class="mr-2 mb-2 btn btn-sm btn-dark"
+                    >Download Invoice</a
+                  >
+                  <!-- <vs-button
                     @click="viewDetails(data[indextr].category)"
                     size="small"
                     class="mr-2 mb-2"
                     >View Prices</vs-button
-                  >
+                  > -->
                 </vs-td>
               </vs-tr>
             </template>
