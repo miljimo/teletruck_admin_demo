@@ -1,6 +1,6 @@
 // axios
 import axios from "axios";
-const baseURL = "https://teletruck-api.herokuapp.com/";
+const baseURL = "https://api.teletruck.org/";
 
 export default axios.create({
   baseURL,
