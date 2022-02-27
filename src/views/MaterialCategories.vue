@@ -82,6 +82,7 @@
                     color="dark"
                     >Add Price</vs-button
                   >
+                 
                 </vs-td>
               </vs-tr>
             </template>
@@ -225,6 +226,42 @@
         </form>
       </div>
     </vs-popup>
+
+    <vs-popup
+      class="addPopup"
+      title="Edit Category pricing"
+      :active.sync="editCategoryPriceView"
+    >
+      <div>
+        <form @submit.prevent="editPrice">
+          <div class="py-3">
+            <vs-input
+              class="w-full"
+              label-placeholder="Enter Price"
+              v-model="editP.price"
+            />
+          </div>
+
+          <div class="mt-10">
+            <vs-button
+              @click="editPrice"
+              color="dark"
+              class="w-full my-3"
+              type="filled"
+              >Edit Pricing</vs-button
+            >
+            <vs-button
+              @click="editCategoryPriceView = false"
+              color="dark"
+              class="w-full mb-2"
+              type="flat"
+              >Cancel</vs-button
+            >
+          </div>
+        </form>
+      </div>
+    </vs-popup>
+
     <vs-popup
       class="addPopup"
       :title="`Pricing for ${viewPreview.name}`"
@@ -242,22 +279,31 @@
             "
           >
             <div class="row">
-              <div class="col-md-7">
+              <div class="col-md-5">
                 <p class="text-small mb-1 text-gray">
                   Size - {{ pricing.size }}
                 </p>
                 <p>{{ pricing.price | currency("₦", 0) }}</p>
               </div>
-              <div class="col-md-5">
-                <div class="text-right">
+              <div class="col-md-7">
+                <div class="flex align-middle justify-center">
                   <vs-button
                     @click="removePricing(pricing.id)"
                     size="small"
                     color="dark"
-                    class="mr-2 mb-2"
+                    class="mr-1 mb-2"
                     type="border"
                   >
                     Remove
+                  </vs-button>
+                  <vs-button
+                    @click="editCategoryPrice(pricing.id)"
+                    size="small"
+                    color="dark"
+                    class="ml-1 mb-2"
+                    type="border"
+                  >
+                    edit Price
                   </vs-button>
                 </div>
               </div>
@@ -292,6 +338,7 @@ export default {
     return {
       contents: [],
       addCategoryPriceView: false,
+      editCategoryPriceView: false,
       categoryP: "",
       trucktype: "",
       addData: false,
@@ -321,12 +368,16 @@ export default {
         price: "",
         id: "",
       },
+      editP: {
+        price: "",
+        id: "",
+      },
       previewPop: false,
       viewPreview: {},
     };
   },
   watch: {
-    "table_options.current_page": function () {
+    "table_options.current_page": function() {
       this.getContents(true);
     },
   },
@@ -334,6 +385,10 @@ export default {
     addCategoryPrice(id) {
       this.addCategoryPriceView = true;
       this.addP.id = id;
+    },
+    editCategoryPrice(id) {
+      this.editCategoryPriceView = true;
+      this.editP.id = id;
     },
     viewAllPrices(category) {
       this.previewPop = true;
@@ -394,6 +449,55 @@ export default {
           this.$store.commit("pgLoading", false);
         });
     },
+    editPrice() {
+      this.$vs.loading();
+      let data = {
+        price: this.editP.price,
+      };
+
+      let apiData = {
+        path: `admin/materials/category/pricing/${this.editP.id}/update`,
+        method: "PUT",
+        data: data,
+      };
+
+      this.$store
+        .dispatch("update", apiData)
+        .then((resp) => {
+          this.$vs.loading.close();
+          this.$vs.notify({
+            title: "Price updated",
+            text: "Successfully updated pricing",
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
+          if (err.response) {
+            this.$vs.notify({
+              title: "Update pricing",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          } else {
+            this.$vs.notify({
+              title: "Update pricing",
+              text: "Unable to update pricing",
+              color: "dark",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }
+          this.$store.commit("pgLoading", false);
+        });
+    },
     deleteFunc() {
       this.$vs.loading({
         container: "#div-with-loading",
@@ -406,7 +510,7 @@ export default {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
 
           this.contents.data.splice(
-            this.contents.data.findIndex(function (i) {
+            this.contents.data.findIndex(function(i) {
               return i.id === contID;
             }),
             1
@@ -497,6 +601,7 @@ export default {
           this.$store.commit("pgLoading", false);
         });
     },
+
     addPricee() {
       this.$vs.loading();
       let data = new FormData();

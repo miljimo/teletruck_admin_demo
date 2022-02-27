@@ -132,6 +132,12 @@
                     color="dark"
                     >View Material</vs-button
                   >
+                  <vs-button
+                    @click="editData = true"
+                    size="small"
+                    class="ml-2 mb-2"
+                    >Edit Material</vs-button
+                  >
                 </vs-td>
               </vs-tr>
             </template>
@@ -259,6 +265,7 @@
         </div>
       </div>
     </vs-popup>
+    
   </div>
 </template>
 <script>
@@ -293,7 +300,7 @@ export default {
     };
   },
   watch: {
-    "table_options.current_page": function () {
+    "table_options.current_page": function() {
       this.getContents(true);
     },
   },
@@ -302,6 +309,7 @@ export default {
       this.previewPop = true;
       this.viewPreview = category;
     },
+
     getCategories() {
       let fetch = {
         path: "/admin/materials/category",
@@ -358,7 +366,7 @@ export default {
           this.$vs.loading.close("#div-with-loading > .con-vs-loading");
 
           this.contents.records.splice(
-            this.contents.records.findIndex(function (i) {
+            this.contents.records.findIndex(function(i) {
               return i.id === contID;
             }),
             1
