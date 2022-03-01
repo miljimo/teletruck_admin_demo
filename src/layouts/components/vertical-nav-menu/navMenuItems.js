@@ -55,7 +55,7 @@ export default [
   },
   {
     url: "/profile",
-    name: "Profile",
+    name: "Settings",
     slug: "profile",
     icon: "UserIcon",
   },
