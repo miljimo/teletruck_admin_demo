@@ -31,6 +31,7 @@
             search
           >
             <template slot="thead">
+              <vs-th>ID</vs-th>
               <vs-th> Created </vs-th>
               <vs-th> Company </vs-th>
               <vs-th> Manager </vs-th>
@@ -41,6 +42,9 @@
 
             <template slot-scope="{ data }">
               <vs-tr :key="indextr" v-for="(tr, indextr) in data">
+                <vs-td>
+                  {{data[indextr].id}}
+                </vs-td>
                 <vs-td :data="data[indextr].id">
                   {{
                     moment
@@ -101,12 +105,10 @@
                     size="small"
                     color="dark"
                     class="mr-2 mb-2"
-                    type="border"
-                  >
-                    <span v-if="data[indextr].status_text == 'active'"
-                      >Deactivate</span
-                    >
-                    <span v-else>Activate</span>
+                    type="border">
+
+                    <span v-if="data[indextr].status_text == 'active'">Enabled</span>
+                    <span v-else>Disabled</span>
                   </vs-button>
                 </vs-td>
               </vs-tr>
@@ -390,11 +392,23 @@ export default {
 
       // console.log(data);
     },
+    parseCompanyToggleResponseError(response){
+
+      let messages  =  new Array();
+
+      if ((response.data != null) && (typeof response.data !== "undefined")){
+        messages.push(response.data.message);
+        //check  if there are additional errors domain specific
+        let data   = response.data.data;
+        for (var prop in data){
+          let msg  = data[prop];
+          messages.push(msg);
+        }
+      }
+      return messages.join("\r\n");
+    },
     toggleStatus(id) {
-      this.$vs.loading({
-        container: "#div-with-loading",
-        scale: 0.6,
-      });
+   
       let data = {
         id,
       };
@@ -402,22 +416,31 @@ export default {
         path: `/admin/managers/${id}/toggle-status`,
         data,
       };
+    
       this.$store
         .dispatch("create", apiData)
         .then((resp) => {
-          this.$vs.loading.close();
+          let result_message = this.parseCompanyToggleResponseError(resp);
+          let success  =  resp.data.status;
+           if(success !== true){
+              this.$vs.notify({
+                title: "Warning:",
+                text: result_message ,
+                color: "warning",
+                icon: "error", 
+                position: "bottom-center",
+              });
+            return ;
+          }
 
           this.$vs.notify({
-            title: "Company status",
-            text: "Status changed successfully",
-            color: "success",
-            icon: "verified_user",
-            position: "bottom-center",
+              title: "Activated",
+              text: result_message ,
+              color: "success",
+              icon: "verified_user", 
+              position: "bottom-center",
           });
-
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+          
         })
         .catch((err) => {
           this.$vs.loading.close();
