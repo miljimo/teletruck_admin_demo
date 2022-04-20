@@ -107,8 +107,8 @@
                     class="mr-2 mb-2"
                     type="border">
 
-                    <span v-if="data[indextr].status_text == 'active'">Enabled</span>
-                    <span v-else>Disabled</span>
+                    <span v-if="isManagerEnable(data[indextr].status)">Deactivate</span>
+                    <span v-else>Activate</span>
                   </vs-button>
                 </vs-td>
               </vs-tr>
@@ -335,7 +335,8 @@
     </vs-popup>
   </div>
 </template>
-<script>
+<script>import internal from "stream";
+
 export default {
   computed: {
     loading() {
@@ -393,7 +394,6 @@ export default {
       // console.log(data);
     },
     parseCompanyToggleResponseError(response){
-
       let messages  =  new Array();
 
       if ((response.data != null) && (typeof response.data !== "undefined")){
@@ -406,6 +406,11 @@ export default {
         }
       }
       return messages.join("\r\n");
+    },
+    refreshPage(){
+      setTimeout(() => {
+            location.reload();
+          }, 1000);
     },
     toggleStatus(id) {
    
@@ -440,6 +445,7 @@ export default {
               icon: "verified_user", 
               position: "bottom-center",
           });
+          this.refreshPage();
           
         })
         .catch((err) => {
@@ -524,6 +530,10 @@ export default {
       this.$store.commit("pgLoading", true);
       this.getContents(false);
     },
+
+    isManagerEnable(statusText){
+       return (parseInt(statusText)  ===2);
+    },
     getContents(divLoad) {
       if (divLoad) {
         this.$vs.loading({
@@ -541,6 +551,8 @@ export default {
         .then((resp) => {
           // console.log(resp.data.data);
           this.contents = resp.data.data;
+
+          console.log(this.contents.data);
 
           if (divLoad) {
             this.$vs.loading.close("#div-with-loading > .con-vs-loading");
@@ -591,15 +603,12 @@ export default {
 
           this.$vs.notify({
             title: "Edit Company Profile",
-            text: "Successfully editted new profile",
+            text: "Successfully updated",
             color: "success",
             icon: "verified_user",
             position: "bottom-center",
           });
-
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+          this.refreshPage();
         })
         .catch((err) => {
           this.$vs.loading.close();
