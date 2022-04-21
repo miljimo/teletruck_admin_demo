@@ -21,7 +21,7 @@
             Disable
           </label>
 
-          <label v-else class="datacontent.status == '2'" >
+          <label v-else  >
            Enable
           </label>
           
@@ -357,6 +357,7 @@ export default {
             return false;
           }
           this.datacontent = data;
+          console.log(this.datacontent);
           this.$store.commit("pgLoading", false);
         })
         .catch((err) => {
