@@ -11,7 +11,21 @@
           <vs-button @click="updateTrack = true" color="dark" class="ml-5"
             >Update Device ID</vs-button
           >
-          <vs-button color="dark" class="ml-5" type="border">Disable</vs-button>
+          <vs-button 
+          @click="disableTruck()"
+          color="dark" 
+          class="ml-5" 
+          type="border">
+
+          <label v-if="datacontent.status == '2'">
+            Disable
+          </label>
+
+          <label v-else  >
+           Enable
+          </label>
+          
+          </vs-button>
         </div>
       </div>
     </div>
@@ -24,9 +38,9 @@
               <div class="mb-3">
                 <p class="small font-light">Status</p>
                 <h5 v-if="datacontent.status == '2'" class="text-success">
-                  Active
+                  Enabled
                 </h5>
-                <h5 v-else class="text-danger">InActive</h5>
+                <h5 v-else class="text-danger">Disabled</h5>
               </div>
               <div class="mb-3">
                 <p class="small font-light">Manager</p>
@@ -220,6 +234,11 @@ export default {
     },
   },
   methods: {
+    refreshPage(){
+        setTimeout(() => {
+            location.reload();
+          }, 1000);
+    },
     submitFormTrackID() {
       this.$vs.loading();
       let data = {
@@ -244,9 +263,7 @@ export default {
             position: "bottom-center",
           });
 
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+         this.refreshPage();
         })
         .catch((err) => {
           this.$vs.loading.close();
@@ -269,6 +286,57 @@ export default {
           }
         });
     },
+    disableTruck(){
+       let data ={
+        id: this.datacontent.id,
+        device_id: this.device_id,
+       }
+
+       let fetch = {
+        path: `admin/trucks/${this.$route.params.id}/approve`,
+        data
+      };
+
+       this.$store
+        .dispatch("create", fetch)
+        .then((resp) => {
+
+          if(resp.data.status !== true){
+            this.$vs.notify({
+              title: "Warning:",
+              text: resp.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });            
+            return ;
+          }
+
+         // activated or other message
+          this.$vs.notify({
+            title: "Message",
+            text: resp.data.message,
+            color: "success",
+            icon: "verified_user",
+            position: "bottom-center",
+          });
+        this.refreshPage()
+
+        }).catch((err) => {
+          try{
+             this.$vs.notify({
+              title: "Get Data",
+              text: err.response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+          }catch(e){
+             console.log(e);
+          }
+        });
+
+    },
     getData() {
       this.$store.commit("pgLoading", true);
       let fetch = {
@@ -277,8 +345,24 @@ export default {
       this.$store
         .dispatch("getContentsDetail", fetch)
         .then((resp) => {
-          // console.log(resp.data.data);
-          this.datacontent = resp.data.data;
+        
+          //get all the data from the response.
+          let success  =  resp.data.status;
+          let message  =  resp.data.message;
+          let data     =  resp.data.data;
+
+          if(success !== true){
+            this.$vs.notify({
+              title: "Error:",
+              text: message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+            return false;
+          }
+          this.datacontent = data;
+          console.log(this.datacontent);
           this.$store.commit("pgLoading", false);
         })
         .catch((err) => {
