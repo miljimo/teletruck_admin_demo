@@ -234,6 +234,11 @@ export default {
     },
   },
   methods: {
+    refreshPage(){
+        setTimeout(() => {
+            location.reload();
+          }, 1000);
+    },
     submitFormTrackID() {
       this.$vs.loading();
       let data = {
@@ -258,9 +263,7 @@ export default {
             position: "bottom-center",
           });
 
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+         this.refreshPage();
         })
         .catch((err) => {
           this.$vs.loading.close();
@@ -297,6 +300,7 @@ export default {
        this.$store
         .dispatch("create", fetch)
         .then((resp) => {
+
           if(resp.data.status !== true){
             this.$vs.notify({
               title: "Warning:",
@@ -304,7 +308,7 @@ export default {
               color: "warning",
               icon: "error",
               position: "bottom-center",
-            });
+            });            
             return ;
           }
 
@@ -316,6 +320,7 @@ export default {
             icon: "verified_user",
             position: "bottom-center",
           });
+        this.refreshPage()
 
         }).catch((err) => {
           try{
