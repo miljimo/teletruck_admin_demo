@@ -406,8 +406,7 @@ export default {
           this.$store.commit("pgLoading", false);
         });
     },
-    submitFormTrackID() {
-      this.$vs.loading();
+    submitFormTrackID() {     
       let data = {
         id: this.activeTruck.id,
         device_id: this.device_id,
@@ -417,11 +416,16 @@ export default {
         path: "admin/trucks/device-id",
         data,
       };
+
+      //Check if the device id is added or not.
+
+     
       this.$store
         .dispatch("update", apiData)
         .then((resp) => {
-          this.$vs.loading.close();
-
+        
+           //check if status is true
+           
           this.$vs.notify({
             title: "Tracker ID Update",
             text: "Successfully updated tracker ID",
