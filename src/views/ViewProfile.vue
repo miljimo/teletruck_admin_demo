@@ -194,15 +194,14 @@
         </form>
       </div>
     </vs-popup>
-
-     <ManagerTruckComponent />
+     <ManagerTruckComponent  :id ="this.$route.params.id"/>
   </div>
  
 
 </template>
 <script>
 // Component Importations
-import ManagerTruckComponent from './components/ManagerTruckComponent.vue';
+import ManagerTruckComponent from './components/TrucksComponent/ManagerTruckComponent.vue';
 
 export default {
     components: {

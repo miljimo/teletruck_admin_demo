@@ -66,7 +66,6 @@
 
                  <!-- Truck Operations -->
                 <vs-td>
-                  
                   <vs-button
                     :to="`/truck/${data[i].id}`"
                     size="small"
@@ -83,27 +82,65 @@
 </template>
 
 <script>
-   
+   "use strict"
+
    export default{
 
+     props:{
+       id: Number
+     },
+      mounted(){
+        console.log(this.manager)
+        this.getManagerTrucks();
+      },
+      
       data(){
          return{
-            trucks: new Array({"name":"MAZ", 
-                                "id":"1", 
-                                "created_at":"10/90/100",
-                                "state":"activated",
-                                "type":"90867890",
-                                "plate_number":"LB10 X789",
-                                "device_id":"09876509-243"})
+            trucks: new Array()
          }
       },
-      methods:{
-          updateTrackID(data){
-            alert(data);
-          }
-      }
 
+      methods:{
+        getManagerTrucks(){
+          let request = {
+                      path: `/admin/managers/trucks/${this.id}`
+                    };
+
+      this.$store.dispatch("getContents", request)
+        .then((response) => {
+          if( (response.status != 200) || (response.data == null)){
+            this.trucks = new Array();
+          }
+          // if the status did not complete display error message
+          if (response.data.status != true){
+            this.$vs.notify({
+              title: "Error",
+              text: response.data.message,
+              color: "warning",
+              icon: "error",
+              position: "bottom-center",
+            });
+            return;
+          }
+         this.trucks = response.data.data.data;
+
+        }).catch((err) => {
+          //server log here
+          console.log(err);
+
+          if ( (err != null)  && (err.response != null)){
+            this.$vs.notify({
+                title: "Error",
+                text: err.response.data.message,
+                color: "warning",
+                icon: "error",
+                position: "bottom-center",
+              });
+          }
+        });
+      }
    }
+}
 
 </script>
 
