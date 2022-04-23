@@ -90,8 +90,7 @@
        id: Number
      },
       mounted(){
-        console.log(this.manager)
-        this.getManagerTrucks();
+         this.getManagerTrucks();
       },
       
       data(){
@@ -113,13 +112,6 @@
           }
           // if the status did not complete display error message
           if (response.data.status != true){
-            this.$vs.notify({
-              title: "Error",
-              text: response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
             return;
           }
          this.trucks = response.data.data.data;
