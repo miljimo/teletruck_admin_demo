@@ -640,8 +640,8 @@ export default {
           icon: "error",
           color: "dark",
           position: "bottom-center",
-          title: "Password mismatch or Charater length is less than 8",
-          text: "Check password again",
+          title: "Password mismatch or character length is less than 8",
+          text: "check password again",
         });
       } else {
         this.$vs.loading();

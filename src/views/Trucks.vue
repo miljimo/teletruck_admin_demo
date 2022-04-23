@@ -31,8 +31,8 @@
             search
           >
             <template slot="thead">
-              <vs-th> Date Created </vs-th>
-              <vs-th> Title </vs-th>
+              <vs-th> Truck's Name </vs-th>
+              <vs-th> Registered Date </vs-th>
               <vs-th> Truck type </vs-th>
               <vs-th> Truck State </vs-th>
               <vs-th> Plate number </vs-th>
@@ -41,51 +41,48 @@
             </template>
 
             <template slot-scope="{ data }">
-              <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td :data="data[indextr].id">
+              <vs-tr :key="i" v-for="(tr, i) in data">
+
+                 <vs-td :data="data[i].name">
+                  <router-link
+                    :to="`/truck/${data[i].id}`"
+                    class="font-bold"
+                  >
+                    {{ data[i].name }}</router-link
+                  >
+                </vs-td>
+
+                <vs-td :data="data[i].id">
                   {{
                     moment
-                      .utc(new Date(data[indextr].created_at))
+                      .utc(new Date(data[i].created_at))
                       .format("dddd, MMM Do 'YY")
                   }}
                 </vs-td>
 
-                <vs-td :data="data[indextr].name">
-                  <router-link
-                    :to="`/truck/${data[indextr].id}`"
-                    class="font-bold"
-                  >
-                    {{ data[indextr].name }}</router-link
-                  >
-                </vs-td>
+               
 
-                <vs-td :data="data[indextr].type">
-                  <span class="text-small" v-html="data[indextr].type"></span>
+                <vs-td :data="data[i].type">
+                  <span class="text-small" v-html="data[i].type"></span>
                 </vs-td>
-                <vs-td :data="data[indextr].state">
+                <vs-td :data="data[i].state">
                   <span class="text-small">{{
-                    data[indextr].state | capitalize
+                    data[i].state | capitalize
                   }}</span>
                 </vs-td>
-                <vs-td :data="data[indextr].plate_number">
-                  {{ data[indextr].plate_number }}
+                <vs-td :data="data[i].plate_number">
+                  {{ data[i].plate_number }}
                 </vs-td>
-                <vs-td :data="data[indextr].device_id">
-                  {{ data[indextr].device_id }}
+                <vs-td :data="data[i].device_id">
+                  {{ data[i].device_id }}
                 </vs-td>
                 <vs-td>
                   <vs-button
-                    :to="`/truck/${data[indextr].id}`"
+                    :to="`/truck/${data[i].id}`"
                     size="small"
                     class="mr-2 mb-2"
                     >View</vs-button
                   >
-                  <vs-button
-                    @click="updateTrackID(data[indextr])"
-                    size="small"
-                    color="dark"
-                    >Update Device ID
-                  </vs-button>
                 </vs-td>
               </vs-tr>
             </template>
@@ -328,12 +325,7 @@ export default {
     },
 
     getContents(divLoad) {
-      if (divLoad) {
-        this.$vs.loading({
-          container: "#div-with-loading",
-          scale: 0.6,
-        });
-      }
+     
       let fetch = {
         path: "admin/trucks",
         pageNo: this.table_options.current_page,
@@ -422,15 +414,13 @@ export default {
      
       this.$store
         .dispatch("update", apiData)
-        .then((resp) => {
-        
-           //check if status is true
-           
+        .then((resp) => {        
+           //check if status is true           
           this.$vs.notify({
             title: "Tracker ID Update",
-            text: "Successfully updated tracker ID",
-            color: "success",
-            icon: "verified_user",
+            text:  "Successfully updated tracker ID",
+            color: "uccess",
+            icon:  "verified_user",
             position: "bottom-center",
           });
 
