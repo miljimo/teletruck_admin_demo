@@ -1,6 +1,6 @@
 
 <template>
-<div>
+<vs-card>
     <div class="header">
       <h3 class="title-header">Total Trucks ({{trucks.length}}) </h3>
     </div>
@@ -78,7 +78,7 @@
               </template>
             </vs-table>
     </div>
-  </div>  
+  </vs-card>  
 </template>
 
 <script>
