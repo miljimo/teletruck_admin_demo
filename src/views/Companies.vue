@@ -92,13 +92,6 @@
                     class="mr-2 mb-2"
                     >View</vs-button
                   >
-                  <vs-button
-                    @click="editCompany(data[indextr])"
-                    size="small"
-                    color="dark"
-                    class="mr-2 mb-2"
-                    >Edit</vs-button
-                  >
 
                   <vs-button
                     @click="toggleStatus(data[indextr].id)"
@@ -381,18 +374,6 @@ export default {
     },
   },
   methods: {
-    editCompany(data) {
-      this.editView = true;
-      this.edit.id = data.id;
-      this.edit.firstname = data.firstname;
-      this.edit.lastname = data.lastname;
-      this.edit.email = data.email;
-      this.edit.phone = data.phone;
-      this.edit.company_name = data.profile.company_name;
-      this.edit.company_address = data.profile.office_address;
-
-      // console.log(data);
-    },
     parseCompanyToggleResponseError(response){
       let messages  =  new Array();
 
