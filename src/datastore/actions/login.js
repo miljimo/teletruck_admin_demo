@@ -1,15 +1,16 @@
 "use strict"
 import axios from "@/axios.js";
 
-const login = (function ({ commit, dispatch }, data) {
+const login = (function (context, data) {
     return new Promise((resolve, reject) => {
-        commit("auth_request");
-
         axios({
             url: "auth/login",
             data: data,
             method: "POST",
         }).then((resp) => {
+            let user   = null;
+            let token  =  null;
+            context.commit("auth_request", token, user);
             resolve(resp);
         }).catch((err) => {
             reject(err);

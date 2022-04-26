@@ -1,9 +1,10 @@
 "use strict"
 
 const auth_success =(function(state, token, user) {
-    state.status = "success";
-    state.token = token;
-    state.user = user;
+  alert("Authen")
+    state.status  = "success";
+    state.token   = token;
+    state.user   = user;
   });
 
 const auth_error =(function(state) {
