@@ -48,7 +48,8 @@ const state = {
      users:0,
      wallet:0,
   },
-trucks: []
+trucks: [],
+all_trucks_meta:{total:1, current_page:1}
 };
 
 export default state;
