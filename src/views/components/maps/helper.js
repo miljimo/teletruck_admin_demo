@@ -31,9 +31,7 @@ function loadGoogleMap(callback, canvasElementID, apiKey = DEFAULT_API_KEY){
 
 function createTrackerMarker(title, location, iconURL){
     var marker = new google.maps.Marker({
-            position:location,
-            label:title,
-            animation:google.maps.Animation.BOUNCE
+        position:location,           
     });
     marker.setClickable(true);
     marker.setOpacity(0.98)
@@ -41,11 +39,11 @@ function createTrackerMarker(title, location, iconURL){
     var  icon = {
         url:iconURL ,
         origin:new google.maps.Point(0,0),
-        scaledSize : new google.maps.Size(25,26)
-        
+        //scaledSize : new google.maps.Size(30,30)
     };
-   // marker.setIcon(icon);
-   // marker.setTitle(title)
+    marker.setIcon(icon);
+    //marker.setLabel(title);
+   
     return marker;
 }
 

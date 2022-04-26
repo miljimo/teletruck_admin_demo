@@ -1,14 +1,15 @@
 <template>
 
 <div>
-
     <div class id="googleMap"/>
+   
 </div>
 
 
 </template>
 
 <script>
+
   import {loadGoogleMap, createTrackerMarker, addClickListener} from "./helper.js" 
 
   
@@ -18,34 +19,63 @@
          latitude   : Number,
          name :String,
          disabled : Boolean,
-         getPosition:Function
+         getPosition:Function,
+         iconUrl:String
+
       },
       data:(function(){
           return{
-             "threadID": 0
+           tracker :  null
+
           }
       }),
       mounted(){
           loadGoogleMap(this.onMapViewerCreated,"googleMap")
       },
-      beforeUpdate(){
-        alert("Heel")
+      beforeUnmount(){
+        window.clearInterval(this.threadID)
       },
-      update:(function(){
 
-      }),
       methods:{
            onMapViewerCreated:(function(map){
                 var pos  = new google.maps.LatLng(this.latitude,this.longitude);
-                var marker = createTrackerMarker(this.name, pos, "./assets/images/truck.png")
-                marker.setMap(map);
-                map.setCenter(marker.getPosition());
-                addClickListener(marker)
-
-               
+                this.tracker = createTrackerMarker(this.name, pos, this.iconUrl)
+                this.tracker.setMap(map);
+                map.setCenter(this.tracker.getPosition());
+                addClickListener(this.tracker)
                 
            })
       },
+
+      watch:{
+          latitude:(function(newVal, oldVal){
+              if(this.tracker  ==  null){
+                  return ;
+              }
+              if(newVal != oldVal){
+                  let cur = this.tracker.getPosition();
+                  let newPosition = new google.maps.LatLng(newVal ,cur.lng());
+                  this.tracker.setPosition(newPosition);
+                  let  map = this.tracker.getMap();
+                  map.setCenter(newPosition);
+              }
+             
+          }),
+          longitude:(function(newVal, oldVal){
+               if(this.tracker  ==  null){
+                  return ;
+              }
+              if(newVal != oldVal){
+                  let cur = this.tracker.getPosition();
+                  let newPosition = new google.maps.LatLng(cur.lng ,newVal);
+                  this.tracker.setPosition(newPosition);
+                  let  map = this.tracker.getMap();
+                  map.setCenter(newPosition);
+              }
+           
+          })
+      }
+     
   }
 </script>
 

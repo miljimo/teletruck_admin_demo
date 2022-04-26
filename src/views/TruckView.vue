@@ -116,6 +116,7 @@
               :longitude="tracker.long" 
               :name="tracker.name"
               :getPosition="getPosition"
+              :iconUrl="tracker.iconUrl"
               :latitude="tracker.lat"/>
           </vs-card>
         </div>
@@ -191,6 +192,7 @@
 <script>
 
 import GoogleMapViewer from "./components/maps/GoogleMapViewer.vue";
+const markerIcon = require("./../assets/images/truck.png");
 
 export default {
   
@@ -205,18 +207,17 @@ export default {
   mounted() {
     this.getData();
     this.getBl();
-
-    setInterval((function(){
-      this.tracker.lat += 0.002;
-    }).bind(this), 100);
+  
 },
   data() {
+    
     return {
       tracker:{
         long:3.385793 ,
         lat:6.575362,
         name:"QGA Tracker",
-        disabled: false
+        disabled: false,
+        iconUrl:markerIcon
       },
       contents: [],
       datacontent: {},
