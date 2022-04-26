@@ -1,5 +1,5 @@
 import axios from '../../../axios/index.js'
-import store from '../../../../store/store.js'
+import store from '../../../../datastore/store.js'
 
 // Token Refresh
 let isAlreadyFetchingAccessToken = false

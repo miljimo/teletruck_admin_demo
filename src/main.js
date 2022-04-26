@@ -53,7 +53,7 @@ import "./http/requests";
 import "./fake-db/index.js";
 
 // Vuex Store
-import store from "./store/store";
+import store from "./datastore/store";
 
 // Vuejs - Vue wrapper for hammerjs
 import { VueHammer } from "vue2-hammer";
