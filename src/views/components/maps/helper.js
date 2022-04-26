@@ -32,7 +32,8 @@ function loadGoogleMap(callback, canvasElementID, apiKey = DEFAULT_API_KEY){
 function createTrackerMarker(title, location, iconURL){
     var marker = new google.maps.Marker({
             position:location,
-            label:"Tracker 1"
+            label:title,
+            animation:google.maps.Animation.BOUNCE
     });
     marker.setClickable(true);
     marker.setOpacity(0.98)
@@ -43,24 +44,23 @@ function createTrackerMarker(title, location, iconURL){
         scaledSize : new google.maps.Size(25,26)
         
     };
-    marker.setIcon(icon);
-    marker.setTitle(title)
+   // marker.setIcon(icon);
+   // marker.setTitle(title)
+    return marker;
+}
+
+function addClickListener(marker, zoom=10){
 
     google.maps.event.addListener(marker,'click',function() {
         let map =   marker.getMap();
-        let pos = marker.getMap().getZoom();
+        let pos =   marker.getMap().getZoom();
         map.setZoom(10);
         map.setCenter(marker.getPosition());
         window.setTimeout(function() {map.setZoom(pos);},3000);
     });
-
-    return marker;
 }
 
 
-
-
-
 export {
-    createTrackerMarker , loadGoogleMap
+    createTrackerMarker , loadGoogleMap, addClickListener
 }

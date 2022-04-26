@@ -111,7 +111,12 @@
             </div>
           </div>
           <vs-card>
-              <GoogleMapViewer />
+              <GoogleMapViewer  
+               :disabled="tracker.disabled"
+              :longitude="tracker.long" 
+              :name="tracker.name"
+              :getPosition="getPosition"
+              :latitude="tracker.lat"/>
           </vs-card>
         </div>
       </div>
@@ -188,27 +193,31 @@
 import GoogleMapViewer from "./components/maps/GoogleMapViewer.vue";
 
 export default {
+  
   components:{
       GoogleMapViewer 
   },
   computed: {
     loading() {
       return this.$store.getters.pgLoading;
-    },
-    getPosition() {
-      let position = {
-        lat: this.datacontent.latitude,
-        lng: this.datacontent.longitude,
-      };
-      return position;
-    },
+    }
   },
   mounted() {
     this.getData();
     this.getBl();
-  },
+
+    setInterval((function(){
+      this.tracker.lat += 0.002;
+    }).bind(this), 100);
+},
   data() {
     return {
+      tracker:{
+        long:3.385793 ,
+        lat:6.575362,
+        name:"QGA Tracker",
+        disabled: false
+      },
       contents: [],
       datacontent: {},
       device_id: "",
@@ -222,10 +231,13 @@ export default {
   },
   watch: {
     "table_options.current_page": function () {
-      this.getContents(true);
+      this.getContents(true);     
     },
   },
   methods: {
+    getPosition() {
+       return [this.datacontent.latitude, this.datacontent.longitude]
+    },
     refreshPage(){
         setTimeout(() => {
             location.reload();

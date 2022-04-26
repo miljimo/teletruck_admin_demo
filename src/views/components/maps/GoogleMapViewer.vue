@@ -9,18 +9,42 @@
 </template>
 
 <script>
-  import {loadGoogleMap, createTrackerMarker} from "./helper.js" 
+  import {loadGoogleMap, createTrackerMarker, addClickListener} from "./helper.js" 
 
   
   export default{
+      props:{
+         longitude : Number,
+         latitude   : Number,
+         name :String,
+         disabled : Boolean,
+         getPosition:Function
+      },
+      data:(function(){
+          return{
+             "threadID": 0
+          }
+      }),
       mounted(){
-          loadGoogleMap((map)=>{
-              alert(map)
-          },"googleMap")
-          
-          var pos  = new google.maps.LatLng(6.575362,3.385793);
-          var marker = createTrackerMarker("IOS APP", pos, "./assets/images/truck.png")
-          marker.setMap(map);
+          loadGoogleMap(this.onMapViewerCreated,"googleMap")
+      },
+      beforeUpdate(){
+        alert("Heel")
+      },
+      update:(function(){
+
+      }),
+      methods:{
+           onMapViewerCreated:(function(map){
+                var pos  = new google.maps.LatLng(this.latitude,this.longitude);
+                var marker = createTrackerMarker(this.name, pos, "./assets/images/truck.png")
+                marker.setMap(map);
+                map.setCenter(marker.getPosition());
+                addClickListener(marker)
+
+               
+                
+           })
       },
   }
 </script>
