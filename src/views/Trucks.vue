@@ -27,7 +27,7 @@
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.data"
+            :data="trucks"
             search
           >
             <template slot="thead">
@@ -225,6 +225,9 @@ export default {
     loading() {
       return this.$store.getters.pgLoading;
     },
+    trucks(){
+        return this.$store.getters.all_trucks;
+    }
   },
   mounted() {
     this.getBl();
@@ -323,45 +326,12 @@ export default {
       this.$store.commit("pgLoading", true);
       this.getContents(false);
     },
-
     getContents(divLoad) {
-     
-      let fetch = {
+      let fetchCriteria = {
         path: "admin/trucks",
         pageNo: this.table_options.current_page,
       };
-
-      this.$store
-        .dispatch("getContents", fetch)
-        .then((resp) => {
-          this.contents = resp.data.data;
-          if (divLoad) {
-            this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          }
-
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Contents",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Contents",
-              text: "Unable to get contents",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
+      this.$store.dispatch("loadTrucksFromServer", fetchCriteria)
     },
     getManagers() {
       let fetch = {

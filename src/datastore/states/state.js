@@ -47,8 +47,8 @@ const state = {
      trips:0,
      users:0,
      wallet:0,
-  }
-  
+  },
+trucks: []
 };
 
 export default state;

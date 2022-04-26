@@ -16,6 +16,7 @@ import logout  from "./users/logout"
 import auth_success from "./users/auth_success.js"
 import {auth_error, auth_request} from "./users/auth.js"
 import updateReport from "./reports/updateReport"
+import updateTrucks from "./trucks/updateTrucks"
 
 
 const mutations = {
@@ -58,7 +59,8 @@ const mutations = {
   logout,
   loading,
   pgLoading:loading,
-  updateReport
+  updateReport,
+  updateTrucks
 };
 
 export default mutations;
