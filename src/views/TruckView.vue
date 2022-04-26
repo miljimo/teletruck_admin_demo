@@ -110,23 +110,9 @@
               </vs-card>
             </div>
           </div>
-          <div>
-            <GmapMap
-              :center="{
-                lat: 10.0,
-                lng: 10.0,
-              }"
-              :zoom="7"
-              style="width: 100%; height: 393px"
-            >
-              <GmapMarker
-                :position="getPosition"
-                :clickable="true"
-                :draggable="true"
-                @click="center = getPosition"
-              />
-            </GmapMap>
-          </div>
+          <vs-card>
+              <GoogleMapViewer />
+          </vs-card>
         </div>
       </div>
     </div>
@@ -198,7 +184,13 @@
   </div>
 </template>
 <script>
+
+import GoogleMapViewer from "./components/maps/GoogleMapViewer.vue";
+
 export default {
+  components:{
+      GoogleMapViewer 
+  },
   computed: {
     loading() {
       return this.$store.getters.pgLoading;
