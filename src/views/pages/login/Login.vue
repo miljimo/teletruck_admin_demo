@@ -82,30 +82,21 @@ export default {
   },
   methods: {
     submitForm() {
+
       this.$vs.loading();
       this.$validator.validateAll().then((result) => {
         if (result) {
           let data = new FormData();
-
           data.append("email", this.email);
           data.append("password", this.password);
+
 
           this.$store
             .dispatch("login", data)
             .then((resp) => {
               this.$vs.loading.close();
-
-              this.$vs.notify({
-                title: "Login",
-                text: "Successfully logged in",
-                color: "success",
-                icon: "verified_user",
-                position: "bottom-center",
-              });
-
               let token = resp.data.data.token.access_token;
-              let user = JSON.stringify(resp.data.data.user);
-
+              let user   = JSON.stringify(resp.data.data.user);
               token = this.CryptoJS.AES.encrypt(
                 token,
                 this.$passPhrase
@@ -119,32 +110,28 @@ export default {
               localStorage.setItem("token", token);
               localStorage.setItem("user", user);
               location.reload();
-
-              // this.$router.push("/");
             })
             .catch((err) => {
               // console.log("Failed");
               this.$vs.loading.close();
               if (err.response) {
                 this.$vs.notify({
-                  title: "Login",
+                  title: "Error",
                   text: err.response.data.message,
                   color: "warning",
                   icon: "error",
                   position: "bottom-center",
                 });
-              } else {
-                this.$vs.notify({
+                return;
+              } 
+              this.$vs.notify({
                   title: "Login",
-                  text: "Unable to Login",
+                  text: "unable to connect to the internet",
                   color: "dark",
                   icon: "error",
                   position: "bottom-center",
-                });
-              }
+               });
             });
-        } else {
-          // form have errors
         }
       });
     },

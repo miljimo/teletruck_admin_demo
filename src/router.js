@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import store from "./store/store.js";
+import store from "./datastore/store.js";
 
 Vue.use(Router);
 
@@ -116,7 +116,7 @@ const router = new Router({
           meta: {
             requiresVisitor: true,
           },
-          component: () => import("@/views/pages/Login.vue"),
+          component: () => import("@/views/pages/login/Login.vue"),
         },
         {
           path: "/pages/error-404",

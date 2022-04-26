@@ -21,13 +21,13 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.total }})</p>
+            <p class="font-bold lead">All ({{ trucks_meta.total }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.data"
+            :data="trucks"
             search
           >
             <template slot="thead">
@@ -89,9 +89,9 @@
           </vs-table>
 
           <vs-pagination
-            v-if="contents"
+            v-if="trucks_meta"
             class="mt-4"
-            :total="Math.ceil(contents.total / 10)"
+            :total="Math.ceil(trucks_meta.total / 10)"
             v-model="table_options.current_page"
           ></vs-pagination>
         </div>
@@ -225,6 +225,12 @@ export default {
     loading() {
       return this.$store.getters.pgLoading;
     },
+    trucks(){
+        return this.$store.getters.all_trucks;
+    },
+    trucks_meta(){
+       return this.$store.getters.all_trucks_meta;
+    }
   },
   mounted() {
     this.getBl();
@@ -232,13 +238,12 @@ export default {
   },
   data() {
     return {
-      contents: [],
       trucktype: "",
       addData: false,
       table_options: {
         current_page: 1,
       },
-      managers: [],
+  
       delAct: "",
       name: "",
       type: "",
@@ -321,133 +326,14 @@ export default {
     },
     getBl() {
       this.$store.commit("pgLoading", true);
-      this.getContents(false);
+      this.loadTrucks();
     },
-
-    getContents(divLoad) {
-     
-      let fetch = {
+    loadTrucks() {
+      let fetchCriteria = {
         path: "admin/trucks",
         pageNo: this.table_options.current_page,
       };
-
-      this.$store
-        .dispatch("getContents", fetch)
-        .then((resp) => {
-          this.contents = resp.data.data;
-          if (divLoad) {
-            this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          }
-
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Contents",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Contents",
-              text: "Unable to get contents",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
-    },
-    getManagers() {
-      let fetch = {
-        path: "admin/managers",
-      };
-
-      this.$store
-        .dispatch("getContents", fetch)
-        .then((resp) => {
-          this.managers = resp.data.data.data;
-
-          // console.log(this.managers);
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Data",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Data",
-              text: "Unable to get Data",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
-    },
-    submitFormTrackID() {     
-      let data = {
-        id: this.activeTruck.id,
-        device_id: this.device_id,
-      };
-
-      let apiData = {
-        path: "admin/trucks/device-id",
-        data,
-      };
-
-      //Check if the device id is added or not.
-
-     
-      this.$store
-        .dispatch("update", apiData)
-        .then((resp) => {        
-           //check if status is true           
-          this.$vs.notify({
-            title: "Tracker ID Update",
-            text:  "Successfully updated tracker ID",
-            color: "uccess",
-            icon:  "verified_user",
-            position: "bottom-center",
-          });
-
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
-        })
-        .catch((err) => {
-          this.$vs.loading.close();
-          if (err.response) {
-            this.$vs.notify({
-              title: "Tracker ID Update",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Tracker ID Update",
-              text: "Unable to Update tracker ID",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-        });
+      this.$store.dispatch("loadTrucksFromServer", fetchCriteria)
     },
     submitForm() {
       this.$vs.loading();

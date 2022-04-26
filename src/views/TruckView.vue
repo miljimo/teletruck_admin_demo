@@ -110,23 +110,15 @@
               </vs-card>
             </div>
           </div>
-          <div>
-            <GmapMap
-              :center="{
-                lat: 10.0,
-                lng: 10.0,
-              }"
-              :zoom="7"
-              style="width: 100%; height: 393px"
-            >
-              <GmapMarker
-                :position="getPosition"
-                :clickable="true"
-                :draggable="true"
-                @click="center = getPosition"
-              />
-            </GmapMap>
-          </div>
+          <vs-card>
+              <GoogleMapViewer  
+               :disabled="tracker.disabled"
+              :longitude="tracker.long" 
+              :name="tracker.name"
+              :getPosition="getPosition"
+              :iconUrl="tracker.iconUrl"
+              :latitude="tracker.lat"/>
+          </vs-card>
         </div>
       </div>
     </div>
@@ -198,25 +190,35 @@
   </div>
 </template>
 <script>
+
+import GoogleMapViewer from "./components/maps/GoogleMapViewer.vue";
+const markerIcon = require("./../assets/images/truck.png");
+
 export default {
+  
+  components:{
+      GoogleMapViewer 
+  },
   computed: {
     loading() {
       return this.$store.getters.pgLoading;
-    },
-    getPosition() {
-      let position = {
-        lat: this.datacontent.latitude,
-        lng: this.datacontent.longitude,
-      };
-      return position;
-    },
+    }
   },
   mounted() {
     this.getData();
     this.getBl();
-  },
+  
+},
   data() {
+    
     return {
+      tracker:{
+        long:3.385793 ,
+        lat:6.575362,
+        name:"QGA Tracker",
+        disabled: false,
+        iconUrl:markerIcon
+      },
       contents: [],
       datacontent: {},
       device_id: "",
@@ -230,10 +232,13 @@ export default {
   },
   watch: {
     "table_options.current_page": function () {
-      this.getContents(true);
+      this.getContents(true);     
     },
   },
   methods: {
+    getPosition() {
+       return [this.datacontent.latitude, this.datacontent.longitude]
+    },
     refreshPage(){
         setTimeout(() => {
             location.reload();

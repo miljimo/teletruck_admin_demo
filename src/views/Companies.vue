@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <div class="row">
       <div class="col-md-9 col-4">
-        <h3 class="font-bold d-inline">Companies</h3>
+        <h3 class="font-bold d-inline">Companies({{managers_meta.total}})</h3>
       </div>
       <div class="col-md-3 col-8">
         <div class="text-right">
@@ -21,13 +21,13 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All ({{ contents.total }})</p>
+            <p class="font-bold lead">Found ({{ managers_meta.total }})</p>
           </div>
 
           <vs-table
             id="div-with-loading"
             max-items="10"
-            :data="contents.data"
+            :data="managers"
             search
           >
             <template slot="thead">
@@ -109,9 +109,9 @@
           </vs-table>
 
           <vs-pagination
-            v-if="contents"
+            v-if="managers_meta"
             class="mt-4"
-            :total="Math.ceil(contents.total / 10)"
+            :total="Math.ceil(managers_meta.total / 10)"
             v-model="table_options.current_page"
           ></vs-pagination>
         </div>
@@ -335,6 +335,12 @@ export default {
     loading() {
       return this.$store.getters.pgLoading;
     },
+    managers(){
+      return this.$store.getters.getManagers;
+    },
+    managers_meta(){
+      return this.$store.getters.getManagersMetadata;
+    }
   },
   mounted() {
     this.getBl();
@@ -526,6 +532,8 @@ export default {
         path: "admin/managers",
         pageNo: this.table_options.current_page,
       };
+
+      this.$store.dispatch("loadManagersFromServer", fetch);
 
       this.$store
         .dispatch("getContents", fetch)
