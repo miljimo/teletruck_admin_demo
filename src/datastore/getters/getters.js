@@ -7,7 +7,7 @@ import getToken from "./get_token"
 import getScrollBarTag from "./get_scrollbar_tag"
 import getReport from "./get_report"
 import { getAllTrucks, getAllTrucksMeta} from "./get_all_trucks"
-
+import {getManagers, getManagersMetadata} from "./get_managers"
 
 const getters = {
   windowBreakPoint: windowBreakPoint,
@@ -22,7 +22,9 @@ const getters = {
   userPermission: getUserPermission,
   reports:getReport,
   all_trucks:getAllTrucks,
-  all_trucks_meta:getAllTrucksMeta
+  all_trucks_meta:getAllTrucksMeta,
+  getManagers,
+  getManagersMetadata
 };
 
 export default getters;

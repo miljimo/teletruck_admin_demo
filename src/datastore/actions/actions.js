@@ -10,6 +10,7 @@ import logout from "./logout";
 import addContent from "./add_content";
 import loadReportFromServer from "./load_server_reports"
 import loadTrucksFromServer from "./loadTrucksFromServer";
+import loadManagersFromServer from "./loadManagersFromServer"
 
 
 const actions = {
@@ -62,7 +63,8 @@ const actions = {
   login,
   logout,
   loadReportFromServer,
-  loadTrucksFromServer
+  loadTrucksFromServer,
+  loadManagersFromServer
 };
 
 export default actions;

@@ -41,7 +41,6 @@ const state = {
   pgLoading: false,
   status: "",
   passPhrase: "!BaByDiaryy@.132]13",
-  
   reports:{
      companies:0,
      trips:0,
@@ -49,7 +48,9 @@ const state = {
      wallet:0,
   },
 trucks: [],
-all_trucks_meta:{total:1, current_page:1}
+all_trucks_meta:{total:1, current_page:1},
+managers:[],
+managers_meta:{total:1, current_page:1}
 };
 
 export default state;

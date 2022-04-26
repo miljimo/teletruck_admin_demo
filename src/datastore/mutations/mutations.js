@@ -18,6 +18,7 @@ import {auth_error, auth_request} from "./users/auth.js"
 import updateReport from "./reports/updateReport"
 import updateTrucks from "./trucks/updateTrucks"
 import updateTrucksPageMetaData from "./trucks/updateTrucksPageMetaData"
+import  {updateManagers, updateManagersMetadata}  from "./updateManagers"
 
 
 const mutations = {
@@ -62,7 +63,9 @@ const mutations = {
   pgLoading:loading,
   updateReport,
   updateTrucks,
-  updateTrucksPageMetaData
+  updateTrucksPageMetaData,
+  updateManagers,
+  updateManagersMetadata
 };
 
 export default mutations;
