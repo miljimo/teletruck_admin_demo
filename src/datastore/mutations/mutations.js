@@ -13,7 +13,9 @@ import  TOGGLE_IS_VERTICAL_NAV_MENU_ACTIVE from "./pages/toggle_vertical_nav_men
 import loading from "./pages/page_loading"
 import  UPDATE_USER_INFO from "./users/update_user_info"
 import logout  from "./users/logout"
-import {auth_success, auth_error, auth_request} from "./users/auth.js"
+import auth_success from "./users/auth_success.js"
+import {auth_error, auth_request} from "./users/auth.js"
+import updateReport from "./reports/updateReport"
 
 
 const mutations = {
@@ -54,7 +56,9 @@ const mutations = {
   auth_success,
   auth_error,
   logout,
-  loading
+  loading,
+  pgLoading:loading,
+  updateReport
 };
 
 export default mutations;

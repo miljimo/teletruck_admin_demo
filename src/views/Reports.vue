@@ -4,14 +4,13 @@
       <div class="col-md-12">
         <div>
           <h1>Reports</h1>
-
           <div class="row mt-4">
             <div class="col-md-3">
               <vs-card>
                 <div class="p-3">
                   <div class="row">
                     <div class="col-9">
-                      <h4 class="font-bold">{{ dashboardData.trips }}</h4>
+                      <h4 class="font-bold">{{ reports.trips }}</h4>
                       <p class="mt-3">Total Trips</p>
                     </div>
                     <div class="col-3">
@@ -28,7 +27,7 @@
                 <div class="p-3">
                   <div class="row">
                     <div class="col-9">
-                      <h4 class="font-bold">{{ dashboardData.companies }}</h4>
+                      <h4 class="font-bold">{{ reports.companies }}</h4>
                       <p class="mt-3">Total Companies</p>
                     </div>
                     <div class="col-3">
@@ -46,7 +45,7 @@
                 <div class="p-3">
                   <div class="row">
                     <div class="col-9">
-                      <h4 class="font-bold">{{ dashboardData.users }}</h4>
+                      <h4 class="font-bold">{{ reports.users }}</h4>
                       <p class="mt-3">Total Registered Users</p>
                     </div>
                     <div class="col-3">
@@ -65,7 +64,7 @@
                   <div class="row">
                     <div class="col-9">
                       <h4 class="font-bold">
-                        {{ dashboardData.wallet | currency("₦") }}
+                        {{ reports.wallet | currency("₦") }}
                       </h4>
                       <p class="mt-3">Total Wallet</p>
                     </div>
@@ -131,30 +130,6 @@
                   <vs-td :data="data[indextr].orderDate">
                     {{ data[indextr].orderDate }}
                   </vs-td>
-
-                  <!-- <vs-td>
-                    <vs-button
-                      :to="`/view-profile/${data[indextr].id}`"
-                      size="small"
-                      class="mr-2 mb-2"
-                      >View</vs-button
-                    >
-                    <vs-button
-                      @click="editCompany(data[indextr].id)"
-                      size="small"
-                      color="dark"
-                      class="mr-2 mb-2"
-                      >Edit</vs-button
-                    >
-                    <vs-button
-                      @click="deleteItem(data[indextr].id)"
-                      size="small"
-                      color="dark"
-                      class="mr-2 mb-2"
-                      type="border"
-                      >Deactivate</vs-button
-                    >
-                  </vs-td> -->
                 </vs-tr>
               </template>
             </vs-table>
@@ -184,46 +159,22 @@ export default {
     loading() {
       return this.$store.getters.pgLoading;
     },
+    reports(){
+      return this.$store.getters.reports;
+    }
   },
   methods: {
     getContent() {
       let fetch = {
         path: "admin/reports/overview",
       };
-
-      this.$store
-        .dispatch("getDatacontent", fetch)
-        .then((resp) => {
-          // console.log(resp.data);
-          this.dashboardData = resp.data.data;
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          // this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Data",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Data",
-              text: "Unable to get Data",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
+      this.$store.dispatch("loadReportFromServer", fetch);
     },
   },
   mounted() {
     this.$store.commit("pgLoading", true);
     this.getContent();
+   
   },
   created() {},
 };

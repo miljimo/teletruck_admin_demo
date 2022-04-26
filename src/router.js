@@ -116,7 +116,7 @@ const router = new Router({
           meta: {
             requiresVisitor: true,
           },
-          component: () => import("@/views/pages/Login.vue"),
+          component: () => import("@/views/pages/login/Login.vue"),
         },
         {
           path: "/pages/error-404",

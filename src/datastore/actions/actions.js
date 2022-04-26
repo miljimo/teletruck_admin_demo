@@ -8,6 +8,8 @@ import create from "./create";
 import login from "./login";
 import logout from "./logout";
 import addContent from "./add_content";
+import loadReportFromServer from "./load_server_reports"
+
 
 const actions = {
   // /////////////////////////////////////////////
@@ -58,6 +60,7 @@ const actions = {
   addContent,
   login,
   logout,
+  loadReportFromServer
 };
 
 export default actions;

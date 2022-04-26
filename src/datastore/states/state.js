@@ -42,6 +42,13 @@ const state = {
   status: "",
   passPhrase: "!BaByDiaryy@.132]13",
   
+  reports:{
+     companies:0,
+     trips:0,
+     users:0,
+     wallet:0,
+  }
+  
 };
 
 export default state;

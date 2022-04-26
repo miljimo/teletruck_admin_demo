@@ -1,4 +1,5 @@
 "use strict"
+import axios from "@/axios.js";
 
 const addContent = (function ({ commit, dispatch, getters }, content) {
     return new Promise((resolve, reject) => {
