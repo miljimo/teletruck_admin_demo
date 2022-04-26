@@ -2,22 +2,7 @@ import navbarSearchAndPinList from "@/layouts/components/navbar/navbarSearchAndP
 import themeConfig from "@/../themeConfig.js";
 import colors from "@/../themeConfig.js";
 
-// /////////////////////////////////////////////
-// Helper
-// /////////////////////////////////////////////
 
-// *From Auth - Data will be received from auth provider
-
-const userDefaults = {
-  uid: 0, // From Auth
-  displayName: "John Doe", // From Auth
-  about:
-    "Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw brownie brownie marshmallow.",
-  photoURL: require("@/assets/images/portrait/small/avatar-s-11.jpg"), // From Auth
-  status: "online",
-  userRole: "admin",
-};
-const accountUser = JSON.parse(localStorage.getItem("adminData"));
 
 // Check if device is touch device
 // This is used to remove perfect scrollbar from touch devices
@@ -42,113 +27,20 @@ const is_touch_device = () => {
 // State
 // /////////////////////////////////////////////
 
-let userRole = window.localStorage.getItem("userRole");
-
 const state = {
-  AppActiveUser: accountUser,
   bodyOverlay: false,
-  isVerticalNavMenuActive: true,
   is_touch_device: is_touch_device(),
   mainLayoutType: themeConfig.mainLayoutType || "vertical",
   navbarSearchAndPinList: navbarSearchAndPinList,
   reduceButton: themeConfig.sidebarCollapsed,
   verticalNavMenuWidth: "default",
   verticalNavMenuItemsMin: false,
-  scrollY: 0,
-  starredPages: navbarSearchAndPinList["pages"].data.filter(
-    (page) => page.is_bookmarked
-  ),
-  theme: themeConfig.theme || "light",
-  themePrimaryColor: colors.primary,
-
-  // Can be used to get current window with
-  // Note: Above breakpoint state is for internal use of sidebar & navbar component
-  windowWidth: null,
-
   // Exalt State
   token: localStorage.getItem("token") || "",
   user: localStorage.getItem("user") || "",
   pgLoading: false,
   status: "",
   passPhrase: "!BaByDiaryy@.132]13",
-  // Roles & Permission
-  role: {
-    uRole: localStorage.getItem("userRole")
-      ? localStorage.getItem("userRole")
-      : "guest",
-    permissions: ["blogs"],
-  },
-  allRoles: [
-    {
-      role: "superAdmin",
-      permissions: [
-        "dashboard",
-        "support",
-        "email-tool",
-        "chat-tool",
-        "todo-tool",
-        "calendar-tool",
-        "account-church",
-        "account-members",
-        "account-admins",
-        "account",
-        "account-withdrawals",
-        "transactions",
-        "blog",
-        "signup",
-        "referrals",
-        "app-settings",
-        "profile",
-        "settings",
-      ],
-    },
-    {
-      role: "admin",
-      permissions: [
-        "dashboard",
-        "support",
-        "email-tool",
-        "chat-tool",
-        "todo-tool",
-        "calendar-tool",
-        "account-church",
-        "account-members",
-        "account-admins",
-        "account",
-        "account-withdrawals",
-        "transactions",
-        "blog",
-        "signup",
-        "referrals",
-        "app-settings",
-        "profile",
-        "settings",
-      ],
-    },
-    {
-      role: "accounting",
-      permissions: [
-        "dashboard",
-        "account",
-        "account-withdrawals",
-        "transactions",
-        "signup",
-        "profile",
-        "settings",
-      ],
-    },
-    {
-      role: "customerCare",
-      permissions: [
-        "dashboard",
-        "support",
-        "account-church",
-        "account-members",
-        "profile",
-        "settings",
-      ],
-    },
-  ],
 };
 
 export default state;

@@ -1,37 +1,24 @@
 import Vue from "vue";
 import App from "./App.vue";
 
-// Vuesax Component Framework
-import Vuesax from "vuesax";
 import "material-icons/iconfont/material-icons.css"; //Material Icons
 import "vuesax/dist/vuesax.css"; // Vuesax
-Vue.use(Vuesax);
+
 import VueClipboard from "vue-clipboard2";
 Vue.use(VueClipboard);
 import Vue2Filters from "vue2-filters";
 import InputTag from "vue-input-tag";
-import VueQuillEditor from "vue-quill-editor";
+
 import "quill/dist/quill.core.css"; // import styles
 import "quill/dist/quill.snow.css"; // for snow theme
 import "quill/dist/quill.bubble.css"; // for bubble theme
 
-Vue.use(VueQuillEditor /* { default global options } */);
-import VueYouTubeEmbed from "vue-youtube-embed";
 
-import * as VueGoogleMaps from "vue2-google-maps";
+
 
 import VueCryptojs from "vue-cryptojs";
 Vue.use(VueCryptojs);
 Vue.use(Vue2Filters);
-Vue.use(VueYouTubeEmbed);
-
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: "AIzaSyDGBlj7ahb_7eIww1hZW7MhD0sfKS-Vuvc",
-    libraries: "places", // This is required if you use the Autocomplete plugin
-  },
-  installComponents: true,
-});
 
 // axios
 // import axios from './axios.js'
@@ -105,11 +92,12 @@ Vue.prototype.$passPhrase = store.getters.passPhrase;
 Vue.component("input-tag", InputTag);
 
 let authenticate = Promise.resolve({ role: "guest" });
+
 authenticate.then((user) => {
   Vue.prototype.$user.set(user);
   new Vue({
     router,
-    store,
+    store:store,
     render: (h) => h(App),
   }).$mount("#app");
 });
