@@ -41,6 +41,7 @@ const state = {
   pgLoading: false,
   status: "",
   passPhrase: "!BaByDiaryy@.132]13",
+  
 };
 
 export default state;
