@@ -10,17 +10,27 @@ const getTruckFromServer =(function(context, playload){
     httpGetDetail(context, requestData).then((resp)=>{
             //get all the data from the response.
           let success  =  resp.data.status;
+          let meta ={
+                message:resp.data.message,
+                success:success
+            }
+
           if(success != true){
               //handler unsuccess feedback todo
+              context.commit("updateTruckMetadata", meta)
               return ;
           }
-          let meta ={
-              message:resp.data.message,
-              success:success
-          }
-          context.commit("updateTruck",({truck:resp.data.data, meta:meta}))
+         
+          context.commit("updateTruck",({truck:resp.data.data}))
+          context.commit("updateTruckMetadata", {})
     }).catch((err)=>{
-        //handle the error todo
+        if(err.response){
+            let meta ={
+                status:err.response.data.status,
+                message : err.response.data.message
+            }
+            context.commit("updateTruckMetadata", meta)
+        }
         console.log(err)
 
     })

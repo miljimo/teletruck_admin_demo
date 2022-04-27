@@ -176,25 +176,26 @@ export default {
     },
     truck_meta(){ 
        return this.$store.getters.getTruckMeta;
+    },
+    tracker(){
+
+      return {
+        long:this.current_truck.longitude ,
+        lat:this.current_truck.latitude,
+        name:this.current_truck.name,
+        disabled: (this.current_truck.status=="2"),
+        iconUrl:markerIcon
+      }
     }
   },
 created(){
   this.fetchCurrentTruck();
 },
 data() {
-    
     return {
       message:"",
-      total_trips:0,
-      tracker:{
-        long:3.385793 ,
-        lat:6.575362,
-        name:"QGA Tracker",
-        disabled: false,
-        iconUrl:markerIcon
-      },
-      contents: [],
-      device_id: "",
+      total_trips:0,     
+      contents: [],   
       addData: false,
       updateTrack: false,
       table_options: {
@@ -225,7 +226,7 @@ data() {
     disableTruck(){
        let data ={
         id: this.current_truck.id,
-        device_id: this.device_id,
+        device_id: this.current_truck.device_id,
        }
 
        let fetch = {
@@ -274,7 +275,11 @@ data() {
 
     },
    fetchCurrentTruck() {
-      this.$store.dispatch("getTruckFromServer", this.$route.params.id);
+      this.$store.dispatch("getTruckFromServer", this.$route.params.id).then((function(){      
+       this.tracker.long   = this.current_truck.longitude;
+       this.tracker.lat    = this.current_truck.latitude;
+       this.tracker.name   = this.current_truck.name;
+      }).bind(this))
     },
     deleteItem(id) {
       this.delAct = id;
