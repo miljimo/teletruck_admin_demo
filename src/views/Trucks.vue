@@ -232,9 +232,12 @@ export default {
        return this.$store.getters.all_trucks_meta;
     }
   },
+  created(){
+    this.loadTrucks()
+  },
   mounted() {
     this.getBl();
-    this.getManagers();
+    
   },
   data() {
     return {
@@ -326,7 +329,6 @@ export default {
     },
     getBl() {
       this.$store.commit("pgLoading", true);
-      this.loadTrucks();
     },
     loadTrucks() {
       let fetchCriteria = {

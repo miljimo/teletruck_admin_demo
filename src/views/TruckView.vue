@@ -17,7 +17,7 @@
           class="ml-5" 
           type="border">
 
-          <label v-if="datacontent.status == '2'">
+          <label v-if="current_truck.status == '2'">
             Disable
           </label>
 
@@ -33,45 +33,11 @@
     <div class="mt-5">
       <div class="row">
         <div class="col-md-4">
-          <vs-card style="min-height: 508px">
-            <div class="p-3">
-              <div class="mb-3">
-                <p class="small font-light">Status</p>
-                <h5 v-if="datacontent.status == '2'" class="text-success">
-                  Enabled
-                </h5>
-                <h5 v-else class="text-danger">Disabled</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">Manager</p>
-                <h5 class="">{{ datacontent.manager_id }}</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">State</p>
-                <h5 class="">{{ datacontent.state }}</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">Plate number</p>
-                <h5 class="">{{ datacontent.plate_number }}</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">Truck type</p>
-                <h5 class="">{{ datacontent.type }}</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">Truck Unit</p>
-                <h5 class="">{{ datacontent.si_unit }}</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">Truck Capacity</p>
-                <h5 class="">{{ datacontent.capacity }}</h5>
-              </div>
-              <div class="mb-3">
-                <p class="small font-light">Device ID</p>
-                <h5 class="">{{ datacontent.device_id }}</h5>
-              </div>
-            </div>
-          </vs-card>
+         <!-- Truck Details Component Here -->
+         <TruckDetailsComponent :truck="current_truck"
+          :message="truck_meta.message"
+         />
+
         </div>
         <div class="col-md-8">
           <div class="row">
@@ -80,7 +46,7 @@
                 <div class="p-3">
                   <div class="row">
                     <div class="col-9">
-                      <h4 class="font-bold">{{ datacontent.name }}</h4>
+                      <h4 class="font-bold">{{current_truck.name }}</h4>
                       <h5 class="mt-3 text-dark opacity-25">Truck Name</h5>
                     </div>
                     <div class="col-3">
@@ -97,7 +63,7 @@
                 <div class="p-3">
                   <div class="row">
                     <div class="col-9">
-                      <h4 class="font-bold">-</h4>
+                      <h4 class="font-bold">{{total_trips}}</h4>
                       <h5 class="mt-3 text-dark opacity-25">Total Trips</h5>
                     </div>
                     <div class="col-3">
@@ -156,7 +122,7 @@
 
     <vs-popup
       class="addPopup"
-      :title="`Update Tracker ID for ${datacontent.name}`"
+      :title="`Update Tracker ID for ${current_truck.name}`"
       :active.sync="updateTrack"
     >
       <div>
@@ -165,8 +131,11 @@
             <vs-input
               class="w-full"
               label-placeholder="Enter tracker ID"
-              v-model="device_id"
+              v-model="current_truck.device_id"
             />
+          </div>
+          <div class="message-container" v-if="truck_meta.message !== ''">
+            {{truck_meta.message}}
           </div>
           <div class="mt-10">
             <vs-button
@@ -191,53 +160,56 @@
 </template>
 <script>
 
-import GoogleMapViewer from "./components/maps/GoogleMapViewer.vue";
-const markerIcon = require("./../assets/images/truck.png");
+import GoogleMapViewer       from "./components/maps/GoogleMapViewer.vue";
+import TruckDetailsComponent from "./components/TrucksComponent/TruckDetailsComponent.vue";
+const markerIcon            = require("./../assets/images/truck.png");
 
 export default {
   
   components:{
-      GoogleMapViewer 
+      GoogleMapViewer ,
+       TruckDetailsComponent
   },
   computed: {
-    loading() {
-      return this.$store.getters.pgLoading;
+    current_truck(){     
+      return this.$store.getters.getCurrentTruck;
+    },
+    truck_meta(){ 
+       return this.$store.getters.getTruckMeta;
+    },
+    tracker(){
+
+      return {
+        long:this.current_truck.longitude ,
+        lat:this.current_truck.latitude,
+        name:this.current_truck.name,
+        disabled: (this.current_truck.status=="2"),
+        iconUrl:markerIcon
+      }
     }
   },
-  mounted() {
-    this.getData();
-    this.getBl();
-  
+created(){
+  this.fetchCurrentTruck();
 },
-  data() {
-    
+data() {
     return {
-      tracker:{
-        long:3.385793 ,
-        lat:6.575362,
-        name:"QGA Tracker",
-        disabled: false,
-        iconUrl:markerIcon
-      },
-      contents: [],
-      datacontent: {},
-      device_id: "",
+      message:"",
+      total_trips:0,     
+      contents: [],   
       addData: false,
       updateTrack: false,
       table_options: {
         current_page: 1,
       },
-      delAct: "",
+      delAct: ""
     };
   },
   watch: {
-    "table_options.current_page": function () {
-      this.getContents(true);     
-    },
+
   },
   methods: {
-    getPosition() {
-       return [this.datacontent.latitude, this.datacontent.longitude]
+    update(){
+       this.$forceUpdate()
     },
     refreshPage(){
         setTimeout(() => {
@@ -245,56 +217,16 @@ export default {
           }, 1000);
     },
     submitFormTrackID() {
-      this.$vs.loading();
-      let data = {
-        id: this.datacontent.id,
-        device_id: this.device_id,
+      let playload = {
+        id: this.current_truck.id,
+        device_id: this.current_truck.device_id,
       };
-
-      let apiData = {
-        path: "admin/trucks/device-id",
-        data,
-      };
-      this.$store
-        .dispatch("update", apiData)
-        .then((resp) => {
-          this.$vs.loading.close();
-
-          this.$vs.notify({
-            title: "Tracker ID Update",
-            text: "Successfully updated tracker ID",
-            color: "success",
-            icon: "verified_user",
-            position: "bottom-center",
-          });
-
-         this.refreshPage();
-        })
-        .catch((err) => {
-          this.$vs.loading.close();
-          if (err.response) {
-            this.$vs.notify({
-              title: "Tracker ID Update",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Tracker ID Update",
-              text: "Unable to Update tracker ID",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-        });
+      this.$store.dispatch("attachTruckTracker",playload)
     },
     disableTruck(){
        let data ={
-        id: this.datacontent.id,
-        device_id: this.device_id,
+        id: this.current_truck.id,
+        device_id: this.current_truck.device_id,
        }
 
        let fetch = {
@@ -342,54 +274,12 @@ export default {
         });
 
     },
-    getData() {
-      this.$store.commit("pgLoading", true);
-      let fetch = {
-        path: `admin/trucks/${this.$route.params.id}`,
-      };
-      this.$store
-        .dispatch("getContentsDetail", fetch)
-        .then((resp) => {
-        
-          //get all the data from the response.
-          let success  =  resp.data.status;
-          let message  =  resp.data.message;
-          let data     =  resp.data.data;
-
-          if(success !== true){
-            this.$vs.notify({
-              title: "Error:",
-              text: message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-            return false;
-          }
-          this.datacontent = data;
-          console.log(this.datacontent);
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Data",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Data",
-              text: "Unable to get Data",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
+   fetchCurrentTruck() {
+      this.$store.dispatch("getTruckFromServer", this.$route.params.id).then((function(){      
+       this.tracker.long   = this.current_truck.longitude;
+       this.tracker.lat    = this.current_truck.latitude;
+       this.tracker.name   = this.current_truck.name;
+      }).bind(this))
     },
     deleteItem(id) {
       this.delAct = id;
@@ -448,11 +338,6 @@ export default {
           }
         });
     },
-    getBl() {
-      //   this.$store.commit("pgLoading", true);
-      //   this.getContents(false);
-    },
-
     getContents(divLoad) {
       if (divLoad) {
         this.$vs.loading({
@@ -501,3 +386,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+ .message-container{
+   font-style:italic;
+   display:block;
+   color:red;
+   text-align:center;
+
+ }
+</style>

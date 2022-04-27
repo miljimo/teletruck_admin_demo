@@ -16,7 +16,7 @@ import logout  from "./users/logout"
 import auth_success from "./users/auth_success.js"
 import {auth_error, auth_request} from "./users/auth.js"
 import updateReport from "./reports/updateReport"
-import updateTrucks from "./trucks/updateTrucks"
+import {updateTrucks,updateTruck,updateTruckMetadata} from "./trucks/updateTrucks"
 import updateTrucksPageMetaData from "./trucks/updateTrucksPageMetaData"
 import  {updateManagers, updateManagersMetadata}  from "./updateManagers"
 
@@ -63,9 +63,11 @@ const mutations = {
   pgLoading:loading,
   updateReport,
   updateTrucks,
+  updateTruck,
   updateTrucksPageMetaData,
   updateManagers,
-  updateManagersMetadata
+  updateManagersMetadata,
+  updateTruckMetadata
 };
 
 export default mutations;

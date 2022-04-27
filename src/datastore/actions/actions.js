@@ -11,6 +11,8 @@ import addContent from "./add_content";
 import loadReportFromServer from "./load_server_reports"
 import loadTrucksFromServer from "./loadTrucksFromServer";
 import loadManagersFromServer from "./loadManagersFromServer"
+import attachTruckTracker from "./attachTruckTracker"
+import getTruckFromServer from "./getTruckFromServer"
 
 
 const actions = {
@@ -64,7 +66,9 @@ const actions = {
   logout,
   loadReportFromServer,
   loadTrucksFromServer,
-  loadManagersFromServer
+  loadManagersFromServer,
+  attachTruckTracker,
+  getTruckFromServer
 };
 
 export default actions;
