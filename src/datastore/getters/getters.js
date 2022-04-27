@@ -6,8 +6,9 @@ import getCurrentUser from "./get_current_user"
 import getToken from "./get_token"
 import getScrollBarTag from "./get_scrollbar_tag"
 import getReport from "./get_report"
-import { getAllTrucks, getAllTrucksMeta} from "./get_all_trucks"
+import { getAllTrucks, getAllTrucksMeta,getCurrentTruck, getTruckMeta} from "./get_all_trucks"
 import {getManagers, getManagersMetadata} from "./get_managers"
+
 
 const getters = {
   windowBreakPoint: windowBreakPoint,
@@ -24,7 +25,10 @@ const getters = {
   all_trucks:getAllTrucks,
   all_trucks_meta:getAllTrucksMeta,
   getManagers,
-  getManagersMetadata
+  getManagersMetadata,
+  getCurrentTruck,
+  getTruckMeta,
+  getCurrentTruck
 };
 
 export default getters;
