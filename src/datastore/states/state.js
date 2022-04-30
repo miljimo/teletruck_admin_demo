@@ -48,12 +48,19 @@ const state = {
      wallet:0,
   },
 current_truck_id:0,
-current_truck : {},
-truck_meta:{},
+current_truck : {longitude:0, latitude:0, name:""},
+truck_meta:{message:"some errors"},
 trucks: [],
 all_trucks_meta:{total:1, current_page:1},
 managers:[],
-managers_meta:{total:1, current_page:1}
+managers_meta:{total:1, current_page:1},
+current_tracker : {
+    threadID:0,
+    long:0 ,
+    lat:0,
+    name:"this.current_truck.name",
+    disabled: true,
+}
 };
 
 export default state;

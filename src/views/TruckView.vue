@@ -78,12 +78,11 @@
           </div>
           <vs-card>
               <GoogleMapViewer  
-               :disabled="tracker.disabled"
-              :longitude="tracker.long" 
-              :name="tracker.name"
-              :getPosition="getPosition"
-              :iconUrl="tracker.iconUrl"
-              :latitude="tracker.lat"/>
+               :disabled="current_truck.status != '2'"
+              :longitude="current_truck.longitude" 
+              :name="current_truck.name"
+              :iconUrl="trackerIcon"
+              :latitude="current_truck.latitude"/>
           </vs-card>
         </div>
       </div>
@@ -131,7 +130,7 @@
             <vs-input
               class="w-full"
               label-placeholder="Enter tracker ID"
-              v-model="current_truck.device_id"
+              v-model="device_id"
             />
           </div>
           <div class="message-container" v-if="truck_meta.message !== ''">
@@ -171,33 +170,31 @@ export default {
        TruckDetailsComponent
   },
   computed: {
-    current_truck(){     
-      return this.$store.getters.getCurrentTruck;
+    current_truck(){  
+      let truck = this.$store.getters.getCurrentTruck
+      this.device_id = truck.device_id
+      return truck 
     },
     truck_meta(){ 
        return this.$store.getters.getTruckMeta;
     },
-    tracker(){
-
-      return {
-        long:this.current_truck.longitude ,
-        lat:this.current_truck.latitude,
-        name:this.current_truck.name,
-        disabled: (this.current_truck.status=="2"),
-        iconUrl:markerIcon
-      }
-    }
   },
 created(){
-  this.fetchCurrentTruck();
+  this.fetchCurrentTruck();  
+},
+mounted() {
+ this.updateTrackerContinuously()
 },
 data() {
     return {
+      trackerIcon:markerIcon,
+      loading:false,
       message:"",
       total_trips:0,     
       contents: [],   
       addData: false,
       updateTrack: false,
+      device_id:0,
       table_options: {
         current_page: 1,
       },
@@ -205,11 +202,14 @@ data() {
     };
   },
   watch: {
-
+     
   },
   methods: {
     update(){
        this.$forceUpdate()
+    },
+    updateTrackerContinuously(){
+       this.$store.dispatch("pollTrackerDataFromServer", this.$route.params.id);
     },
     refreshPage(){
         setTimeout(() => {
@@ -219,14 +219,14 @@ data() {
     submitFormTrackID() {
       let playload = {
         id: this.current_truck.id,
-        device_id: this.current_truck.device_id,
+        device_id:  this.device_id,
       };
       this.$store.dispatch("attachTruckTracker",playload)
     },
     disableTruck(){
        let data ={
         id: this.current_truck.id,
-        device_id: this.current_truck.device_id,
+        device_id:  this.device_id,
        }
 
        let fetch = {
@@ -237,26 +237,6 @@ data() {
        this.$store
         .dispatch("create", fetch)
         .then((resp) => {
-
-          if(resp.data.status !== true){
-            this.$vs.notify({
-              title: "Warning:",
-              text: resp.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });            
-            return ;
-          }
-
-         // activated or other message
-          this.$vs.notify({
-            title: "Message",
-            text: resp.data.message,
-            color: "success",
-            icon: "verified_user",
-            position: "bottom-center",
-          });
         this.refreshPage()
 
         }).catch((err) => {
@@ -275,11 +255,7 @@ data() {
 
     },
    fetchCurrentTruck() {
-      this.$store.dispatch("getTruckFromServer", this.$route.params.id).then((function(){      
-       this.tracker.long   = this.current_truck.longitude;
-       this.tracker.lat    = this.current_truck.latitude;
-       this.tracker.name   = this.current_truck.name;
-      }).bind(this))
+      this.$store.dispatch("getTruckFromServer", this.$route.params.id)
     },
     deleteItem(id) {
       this.delAct = id;

@@ -7,6 +7,7 @@ const loadTrucksFromServer  =(function(context , criteria){
     getContents(context, criteria).then((resp)=>{      
         if(!resp.data.status){
             //do nothing
+            context.commit("updateTrucksPageMetaData", {message:resp.data.message})
             return  ;
         }
         let truckWithMeta =  resp.data.data;

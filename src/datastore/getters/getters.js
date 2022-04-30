@@ -28,7 +28,7 @@ const getters = {
   getManagersMetadata,
   getCurrentTruck,
   getTruckMeta,
-  getCurrentTruck
+  getCurrentTruck,
 };
 
 export default getters;

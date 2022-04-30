@@ -13,6 +13,7 @@ import loadTrucksFromServer from "./loadTrucksFromServer";
 import loadManagersFromServer from "./loadManagersFromServer"
 import attachTruckTracker from "./attachTruckTracker"
 import getTruckFromServer from "./getTruckFromServer"
+import {pollTrackerDataFromServer}  from "./pollTrackerDataFromServer"
 
 
 const actions = {
@@ -68,7 +69,8 @@ const actions = {
   loadTrucksFromServer,
   loadManagersFromServer,
   attachTruckTracker,
-  getTruckFromServer
+  getTruckFromServer,
+  pollTrackerDataFromServer 
 };
 
 export default actions;

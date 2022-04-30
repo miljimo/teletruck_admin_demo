@@ -20,7 +20,6 @@ const getTruckFromServer =(function(context, playload){
               context.commit("updateTruckMetadata", meta)
               return ;
           }
-         
           context.commit("updateTruck",({truck:resp.data.data}))
           context.commit("updateTruckMetadata", {})
     }).catch((err)=>{

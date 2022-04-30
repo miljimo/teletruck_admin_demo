@@ -5,9 +5,7 @@ const getAllTrucks=(function(state){
 });
 
 const getCurrentTruck = (function(state){
-    return state.trucks.find((truck)=>{
-        return (truck.id == state.current_truck_id);
-    });
+   return state.current_truck
 })
 
 const getTruckMeta=(function(state){

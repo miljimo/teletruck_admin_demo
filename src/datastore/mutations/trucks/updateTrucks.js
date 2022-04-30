@@ -31,4 +31,13 @@ const updateTruckMetadata =(function(state, meta){
    state.truck_meta  = Object.assign({},meta);
 })
 
-export {updateTrucks, updateTruck,updateTruckMetadata}
+const updateTruckPosition = (function(state, data){
+
+     if(state.current_truck != null){
+          state.current_truck.latitude  = data.lat;
+          state.current_truck.longitude = data.long;
+          state.current_truck.update_at  = data.date
+     }
+})
+
+export {updateTrucks, updateTruck,updateTruckMetadata, updateTruckPosition}

@@ -15,8 +15,8 @@
   
   export default{
       props:{
-         longitude : Number,
-         latitude   : Number,
+         longitude : String,
+         latitude   : String,
          name :String,
          disabled : Boolean,
          getPosition:Function,
@@ -38,7 +38,7 @@
 
       methods:{
            onMapViewerCreated:(function(map){
-                var pos  = new google.maps.LatLng(this.latitude,this.longitude);
+                var pos  = new google.maps.LatLng(parseFloat(this.latitude),parseFloat(this.longitude));
                 this.tracker = createTrackerMarker(this.name, pos, this.iconUrl)
                 this.tracker.setMap(map);
                 map.setCenter(this.tracker.getPosition());
@@ -54,7 +54,7 @@
               }
               if(newVal != oldVal){
                   let cur = this.tracker.getPosition();
-                  let newPosition = new google.maps.LatLng(newVal ,cur.lng());
+                  let newPosition = new google.maps.LatLng(parseFloat(newVal) ,cur.lng());
                   this.tracker.setPosition(newPosition);
                   let  map = this.tracker.getMap();
                   map.setCenter(newPosition);
@@ -67,7 +67,7 @@
               }
               if(newVal != oldVal){
                   let cur = this.tracker.getPosition();
-                  let newPosition = new google.maps.LatLng(cur.lng ,newVal);
+                  let newPosition = new google.maps.LatLng(cur.lng ,parseFloat(newVal));
                   this.tracker.setPosition(newPosition);
                   let  map = this.tracker.getMap();
                   map.setCenter(newPosition);

@@ -16,7 +16,7 @@ import logout  from "./users/logout"
 import auth_success from "./users/auth_success.js"
 import {auth_error, auth_request} from "./users/auth.js"
 import updateReport from "./reports/updateReport"
-import {updateTrucks,updateTruck,updateTruckMetadata} from "./trucks/updateTrucks"
+import {updateTrucks,updateTruck,updateTruckMetadata,updateTruckPosition} from "./trucks/updateTrucks"
 import updateTrucksPageMetaData from "./trucks/updateTrucksPageMetaData"
 import  {updateManagers, updateManagersMetadata}  from "./updateManagers"
 
@@ -67,7 +67,8 @@ const mutations = {
   updateTrucksPageMetaData,
   updateManagers,
   updateManagersMetadata,
-  updateTruckMetadata
+  updateTruckMetadata,
+  updateTruckPosition
 };
 
 export default mutations;
