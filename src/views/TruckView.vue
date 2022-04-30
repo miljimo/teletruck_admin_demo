@@ -78,7 +78,6 @@
           </div>
           <vs-card>
               <GoogleMapViewer  
-               :disabled="current_truck.status != '2'"
               :longitude="current_truck.longitude" 
               :name="current_truck.name"
               :iconUrl="trackerIcon"
@@ -202,7 +201,10 @@ data() {
     };
   },
   watch: {
-     
+    
+  },
+ deactivated(){
+    alert("Changing route detected")
   },
   methods: {
     update(){

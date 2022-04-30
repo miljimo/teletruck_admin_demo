@@ -10,6 +10,12 @@ import { getAllTrucks, getAllTrucksMeta,getCurrentTruck, getTruckMeta} from "./g
 import {getManagers, getManagersMetadata} from "./get_managers"
 
 
+
+const stopTrackerPolling=(function(state){
+  return state.stop_tracker_polling
+})
+
+
 const getters = {
   windowBreakPoint: windowBreakPoint,
   scrollbarTag:getScrollBarTag,
@@ -29,6 +35,7 @@ const getters = {
   getCurrentTruck,
   getTruckMeta,
   getCurrentTruck,
+  stopTrackerPolling
 };
 
 export default getters;

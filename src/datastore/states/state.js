@@ -60,7 +60,8 @@ current_tracker : {
     lat:0,
     name:"this.current_truck.name",
     disabled: true,
-}
+},
+stop_tracker_polling:false,
 };
 
 export default state;
