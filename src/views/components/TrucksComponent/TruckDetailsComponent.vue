@@ -40,6 +40,16 @@
               </div>
 
                <div class="mb-3">
+                <p class="small font-light">Longitude</p>
+                <h5 class="">{{ truck.longitude }}</h5>
+              </div>
+               <div class="mb-3">
+                <p class="small font-light">Latitude</p>
+                <h5 class="">{{ truck.latitude }}</h5>
+              </div>
+              
+
+               <div class="mb-3">
                 <p class="small font-light">Last Update Date</p>
                 <h5 class="">{{ truck.updated_at}}</h5>
               </div>

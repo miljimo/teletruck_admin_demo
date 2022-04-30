@@ -1,10 +1,11 @@
 import Vue from "vue";
-import Router from "vue-router";
+import VueRouter from "vue-router";
 import store from "./datastore/store.js";
 
-Vue.use(Router);
 
-const router = new Router({
+Vue.use(VueRouter);
+
+const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   scrollBehavior() {

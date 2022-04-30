@@ -47,6 +47,7 @@ function createTrackerMarker(title, location, iconURL){
     return marker;
 }
 
+
 function addClickListener(marker, zoom=10){
 
     google.maps.event.addListener(marker,'click',function() {
