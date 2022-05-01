@@ -170,6 +170,7 @@ current_tracker : {
     disabled: true,
 },
 stop_tracker_polling:false,
+errors:[]
 };
 
 export default state;

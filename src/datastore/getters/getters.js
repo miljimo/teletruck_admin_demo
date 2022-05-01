@@ -22,6 +22,11 @@ const stopTrackerPolling=(function(state){
 })
 
 
+const getErrors =(function(state){
+  return state.errors;
+})
+
+
 const getters = {
   windowBreakPoint: windowBreakPoint,
   scrollbarTag:getScrollBarTag,
@@ -41,7 +46,8 @@ const getters = {
   getCurrentTruck,
   getTruckMeta,
   getCurrentTruck,
-  stopTrackerPolling
+  stopTrackerPolling,
+  getErrors
 };
 
 export default getters;

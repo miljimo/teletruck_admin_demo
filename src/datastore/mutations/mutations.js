@@ -19,6 +19,8 @@ import updateReport from "./reports/updateReport"
 import {updateTrucks,updateTruck,updateTruckMetadata,updateTruckPosition} from "./trucks/updateTrucks"
 import updateTrucksPageMetaData from "./trucks/updateTrucksPageMetaData"
 import  {updateManagers, updateManagersMetadata}  from "./updateManagers"
+import {createErrors, clearErrors} from "./createErrors"
+import updateManagerStatus from "./updateManagerStatus"
 
 
 const mutations = {
@@ -68,7 +70,10 @@ const mutations = {
   updateManagers,
   updateManagersMetadata,
   updateTruckMetadata,
-  updateTruckPosition
+  updateTruckPosition,
+  createErrors,
+  clearErrors,
+  updateManagerStatus
 };
 
 export default mutations;

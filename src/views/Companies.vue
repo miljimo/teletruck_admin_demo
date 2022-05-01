@@ -20,6 +20,16 @@
     <div class="mt-5">
       <vs-card>
         <div class="p-2">
+          <div class="error-container" v-if="has_error"> 
+            <div><button @click="clearError">
+               X
+              </button></div>
+            <ul>
+              <li :key="index" v-for="(item, index) in error_messages">
+                {{item}}
+              </li>
+             </ul>
+          </div>
           <div class="mb-4">
             <p class="font-bold lead">Found ({{ managers_meta.total }})</p>
           </div>
@@ -331,19 +341,28 @@
 <script>import internal from "stream";
 
 export default {
+
   computed: {
+   
     loading() {
       return this.$store.getters.pgLoading;
     },
     managers(){
       return this.$store.getters.getManagers;
     },
+    error_messages(){
+      return this.$store.getters.getErrors;
+    },
     managers_meta(){
       return this.$store.getters.getManagersMetadata;
-    }
+    },
+     has_error(){
+        return (this.error_messages.length >  0)
+     }
+    
   },
   mounted() {
-    this.getBl();
+    this.getBl();   
   },
   data() {
     return {
@@ -380,19 +399,8 @@ export default {
     },
   },
   methods: {
-    parseCompanyToggleResponseError(response){
-      let messages  =  new Array();
-
-      if ((response.data != null) && (typeof response.data !== "undefined")){
-        messages.push(response.data.message);
-        //check  if there are additional errors domain specific
-        let data   = response.data.data;
-        for (var prop in data){
-          let msg  = data[prop];
-          messages.push(msg);
-        }
-      }
-      return messages.join("\r\n");
+    clearError(){
+        this.$store.commit("clearErrors")
     },
     refreshPage(){
       setTimeout(() => {
@@ -400,61 +408,7 @@ export default {
           }, 1000);
     },
     toggleStatus(id) {
-   
-      let data = {
-        id,
-      };
-      let apiData = {
-        path: `/admin/managers/${id}/toggle-status`,
-        data,
-      };
-    
-      this.$store
-        .dispatch("create", apiData)
-        .then((resp) => {
-          let result_message = this.parseCompanyToggleResponseError(resp);
-          let success  =  resp.data.status;
-           if(success !== true){
-              this.$vs.notify({
-                title: "Warning:",
-                text: result_message ,
-                color: "warning",
-                icon: "error", 
-                position: "bottom-center",
-              });
-            return ;
-          }
-
-          this.$vs.notify({
-              title: "Activated",
-              text: result_message ,
-              color: "success",
-              icon: "verified_user", 
-              position: "bottom-center",
-          });
-          this.refreshPage();
-          
-        })
-        .catch((err) => {
-          this.$vs.loading.close();
-          if (err.response) {
-            this.$vs.notify({
-              title: "Company status",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Company status",
-              text: "Unable to Change status",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-        });
+      this.$store.dispatch("toggleManagerActivation", id);
     },
     deleteItem(id) {
       this.delAct = id;
@@ -522,54 +476,12 @@ export default {
        return (parseInt(statusText)  ===2);
     },
     getContents(divLoad) {
-      if (divLoad) {
-        this.$vs.loading({
-          container: "#div-with-loading",
-          scale: 0.6,
-        });
-      }
       let fetch = {
         path: "admin/managers",
         pageNo: this.table_options.current_page,
       };
 
       this.$store.dispatch("loadManagersFromServer", fetch);
-
-      this.$store
-        .dispatch("getContents", fetch)
-        .then((resp) => {
-          // console.log(resp.data.data);
-          this.contents = resp.data.data;
-
-          console.log(this.contents.data);
-
-          if (divLoad) {
-            this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          }
-
-          this.$store.commit("pgLoading", false);
-        })
-        .catch((err) => {
-          this.$vs.loading.close("#div-with-loading > .con-vs-loading");
-          if (err.response) {
-            this.$vs.notify({
-              title: "Get Data",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Get Data",
-              text: "Unable to get Data",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-          this.$store.commit("pgLoading", false);
-        });
     },
     editProfile() {
       this.$vs.loading();
@@ -690,3 +602,40 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .error-container{
+    margin:0px;
+    padding:5px;
+    position:relative;
+    background-color:#ffe6cc;
+    border-radius:5px;
+  }
+  .error-container button{
+    margin:0px;
+    padding:5px;
+    font-size:12px;
+    font-weight: bold;
+    border:0px;
+    background-color:#ff9933;
+    border-radius:4px;
+    color: #fff2e6 ;
+    cursor:pointer;
+    float:right;
+
+  }
+
+  .error-container ul{
+    margin:0px;
+    padding:0px;
+  }
+
+.error-container ul li{
+    margin:0px;
+    padding:2px;
+    font-style: italic;
+    color:red !important;
+    font-size:12px;
+  }
+
+</style>
