@@ -408,6 +408,7 @@ export default {
           }, 1000);
     },
     toggleStatus(id) {
+      this.clearError();
       this.$store.dispatch("toggleManagerActivation", id);
     },
     deleteItem(id) {
