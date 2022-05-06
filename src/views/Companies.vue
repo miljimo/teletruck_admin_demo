@@ -20,16 +20,8 @@
     <div class="mt-5">
       <vs-card>
         <div class="p-2">
-          <div class="error-container" v-if="has_error"> 
-            <div><button @click="clearError">
-               X
-              </button></div>
-            <ul>
-              <li :key="index" v-for="(item, index) in error_messages">
-                {{item}}
-              </li>
-             </ul>
-          </div>
+          <ErrorComponent :messages="error_messages" :closed="!has_error"/>          
+         
           <div class="mb-4">
             <p class="font-bold lead">Found ({{ managers_meta.total }})</p>
           </div>
@@ -339,9 +331,12 @@
   </div>
 </template>
 <script>import internal from "stream";
-
+import ErrorComponent from "./components/ErrorComponent.vue"
 export default {
 
+components:{
+  ErrorComponent
+},
   computed: {
    
     loading() {
@@ -635,7 +630,7 @@ export default {
     margin:0px;
     padding:2px;
     font-style: italic;
-    color:red !important;
+    color:rgb(184, 131, 34) !important;
     font-size:12px;
   }
 
