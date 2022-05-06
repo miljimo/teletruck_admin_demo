@@ -157,7 +157,7 @@ const state = {
   },
 current_truck_id:0,
 current_truck : {longitude:0, latitude:0, name:""},
-truck_meta:{message:"some errors"},
+truck_meta:{message:""},
 trucks: [],
 all_trucks_meta:{total:1, current_page:1},
 managers:[],

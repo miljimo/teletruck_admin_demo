@@ -1,7 +1,7 @@
 <template>
      <vs-card style="min-height: 508px">
             <div class="p-3">
-              <div class="error-container" v-if='message != ""'> 
+              <div class="error-container" v-if='has_error'> 
                 <div><button @click="clearError">
                   X
                   </button></div>
@@ -71,6 +71,14 @@
            truck: Object,
            message:String
        },
+       computed:{
+          has_error:(function(){
+              if(this.message){
+                return  ( this.message.trim() != "")
+              }
+              return false;
+          })
+       },       
        methods:{
          clearError:(function(e){
             this.message="";
