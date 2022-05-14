@@ -153,21 +153,6 @@
               v-model="company_address"
             />
           </div>
-          <!-- <div class="py-3">
-            <vs-input
-              class="w-full"
-              label-placeholder="Company Email"
-              v-model="email"
-            />
-          </div> -->
-          <!-- <div class="py-3">
-            <vs-input
-              class="w-full"
-              label-placeholder="Company Phone number"
-              v-model="phone"
-            />
-          </div> -->
-
           <div>
             <div class="py-3">
               <div class="row">

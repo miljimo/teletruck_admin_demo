@@ -15,7 +15,7 @@ import attachTruckTracker from "./attachTruckTracker"
 import getTruckFromServer from "./getTruckFromServer"
 import {pollTrackerDataFromServer}  from "./pollTrackerDataFromServer"
 import toggleManagerActivation from "./toggleManagerActivation"
-
+import {getAllOrders} from "./orders/getAllOrders"
 
 const actions = {
   // /////////////////////////////////////////////
@@ -72,7 +72,8 @@ const actions = {
   attachTruckTracker,
   getTruckFromServer,
   pollTrackerDataFromServer,
-  toggleManagerActivation
+  toggleManagerActivation,
+  getAllOrders
 };
 
 export default actions;

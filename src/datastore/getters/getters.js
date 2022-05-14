@@ -8,7 +8,7 @@ import getScrollBarTag from "./get_scrollbar_tag"
 import getReport from "./get_report"
 import { getAllTrucks, getAllTrucksMeta,getCurrentTruck, getTruckMeta} from "./get_all_trucks"
 import {getManagers, getManagersMetadata} from "./get_managers"
-
+import {getOrders,getOrdersMeta} from "./orders"
 
 
 const stopTrackerPolling=(function(state){
@@ -47,7 +47,10 @@ const getters = {
   getTruckMeta,
   getCurrentTruck,
   stopTrackerPolling,
-  getErrors
+  getErrors,
+  // Orders
+  getOrders,
+  getOrdersMeta
 };
 
 export default getters;

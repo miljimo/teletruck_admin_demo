@@ -170,7 +170,9 @@ current_tracker : {
     disabled: true,
 },
 stop_tracker_polling:false,
-errors:[]
+errors:[],
+orders:[],
+ordersMeta :{current_page:0}
 };
 
 export default state;

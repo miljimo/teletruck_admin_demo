@@ -11,7 +11,8 @@ const loadManagersFromServer = (function(context, criteria){
        context.commit("updateManagersMetadata", metadata)
    
    }).catch((err)=>{
-      console.log(err);
+      console.log(err)
+      context.commit("updateTruckMetadata", { message: err.response.data.message })
    });
     
 });

@@ -85,6 +85,11 @@ const router = new VueRouter({
           component: () => import("./views/Orders.vue"),
         },
         {
+          path: "/orders/:id",
+          name: "viewOrderDetails",
+          component: () => import("./views/OrderDetails.vue"),
+        },
+        {
           path: "/wallet",
           name: "wallet",
           component: () => import("./views/Wallet.vue"),

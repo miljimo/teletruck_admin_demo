@@ -21,6 +21,8 @@ import updateTrucksPageMetaData from "./trucks/updateTrucksPageMetaData"
 import  {updateManagers, updateManagersMetadata}  from "./updateManagers"
 import {createErrors, clearErrors} from "./createErrors"
 import updateManagerStatus from "./updateManagerStatus"
+import updateOrders from "./orders/updateOrders"
+
 
 
 const mutations = {
@@ -73,7 +75,10 @@ const mutations = {
   updateTruckPosition,
   createErrors,
   clearErrors,
-  updateManagerStatus
+  updateManagerStatus,
+  //Orders
+  updateOrders,
+ 
 };
 
 export default mutations;
