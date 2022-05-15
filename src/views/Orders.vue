@@ -36,7 +36,11 @@
               <vs-td>
                   <div class="select-order-container">
                       <label>{{i+1}}</label>
-                      <input type="checkbox" :value="data[i].id"/>
+                      <input type="checkbox" 
+                            :value="data[i].id" 
+                            :id="data[i].uuid"
+                            @change="selectTableRowCheckBox($event)" 
+                            :checked="isChecked(data[i].id)" />
                   </div>
               </vs-td>
                 <vs-td :data="data[i].id">
@@ -96,7 +100,13 @@
   </div>
 </template>
 <script>
+import internal from "stream";
+import store from "../datastore/store";
+
 export default {
+  data:{
+    selectedRow:[],
+  },
   computed: {
     orders:(function(){  
       return this.$store.getters.getOrders
@@ -123,7 +133,21 @@ export default {
     downloadReciept:(function(order){
       alert(JSON.stringify(order))
 
-    }).bind(this)
+    }),
+    isChecked:(function(orderID){
+      return this.$store.getters.getOrderSelectionStatus(orderID)
+    }),
+    selectTableRowCheckBox(evt){
+     let el  =  evt.target;
+      if(el){
+        let  id =  parseInt(el.value)
+        if(el.checked){
+           this.$store.commit("selectedOrder", id)
+           return ;
+        }
+        this.$store.commit("removeSelectedOrder", id)
+      }
+    }
   } 
 }
 </script>

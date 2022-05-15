@@ -27,6 +27,17 @@ const getErrors =(function(state){
 })
 
 
+const getOrderSelectionStatus = (function(state){
+  let getOrderStatus= (function(orderID){
+    let selectedID =  state.selectedOrders.findIndex((id)=>{
+          return (id == orderID)
+     })
+     return (selectedID >= 0)
+  })
+  return  getOrderStatus;
+})
+
+
 const getters = {
   windowBreakPoint: windowBreakPoint,
   scrollbarTag:getScrollBarTag,
@@ -50,7 +61,8 @@ const getters = {
   getErrors,
   // Orders
   getOrders,
-  getOrdersMeta
+  getOrdersMeta,
+  getOrderSelectionStatus
 };
 
 export default getters;

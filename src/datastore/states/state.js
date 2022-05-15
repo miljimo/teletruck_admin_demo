@@ -160,6 +160,7 @@ current_tracker : {
 stop_tracker_polling:false,
 errors:[],
 orders:[],
+selectedOrders:[],
 ordersMeta :{current_page:0}
 };
 

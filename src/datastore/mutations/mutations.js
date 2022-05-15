@@ -25,6 +25,37 @@ import updateOrders from "./orders/updateOrders"
 
 
 
+const selectedOrder=(function(state, playload){
+  let order   =  state.orders.find((function(order){
+       return (order.id==playload)
+  }))
+
+  if(order){
+      // we find the order with the id , therefore we can select it
+      let index= state.selectedOrders.findIndex((id)=>{
+        return id == order.id;
+      })
+
+      if(index < 0){
+        // add the new order id
+        state.selectedOrders.push(order.id)
+      }
+  }
+
+})
+
+const removeSelectedOrder =(function(state, orderID){
+  let index= state.selectedOrders.findIndex((id)=>{
+    return id ==  orderID;
+  })
+
+  if(index >= 0){
+    //found then removed
+    state.selectedOrders.splice(index, 1)
+  }
+
+})
+
 const mutations = {
   UPDATE_USER_INFO,
   TOGGLE_IS_VERTICAL_NAV_MENU_ACTIVE,
@@ -78,6 +109,8 @@ const mutations = {
   updateManagerStatus,
   //Orders
   updateOrders,
+  selectedOrder,
+  removeSelectedOrder
  
 };
 
