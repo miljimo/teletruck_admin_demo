@@ -131,11 +131,14 @@
                   <vs-card>
                   <div class="container">
                       <div class="row">
-                          <div class="col-md-10">
+                          <div class="col-md-9">
                               <strong>Shipping Address:</strong> {{order.order.shipping_address}}
                           </div>
-                          <div class="col-md-2">
-                              <vs-button>Track</vs-button>
+                          <div class="col-md-3" v-if="order.truck_id!=null">
+                              <vs-button 
+                              :to="`/truck/${order.truck_id}`"
+                              class="font-bold"
+                              >Track Truck</vs-button>
                           </div>
                       </div>
 
