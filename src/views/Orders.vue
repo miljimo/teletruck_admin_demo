@@ -8,9 +8,9 @@
             <p class="font-bold lead">Orders ({{orders.length}})</p>
              <div class="container button-panel">
               <ul>
-                <li> <input type="button" value="Create" /></li>
-                <li>  <input type="button" value="Delete" /></li>
-                <li>  <input type="button" value="Modified" /></li>
+                <li> <input type="button" value="Create"  @click="createUserOrderFromAdmin()"/></li>
+                <li>  <input type="button" value="Delete" :disabled="disabledDeleteButton()"/></li>
+                <li>  <input type="button" value="Modified" :disabled="disableModifiedSelectedOrder()"/></li>
               </ul>
             </div>
           </div>
@@ -113,6 +113,9 @@ export default {
     }),
     orderMeta:(function(){
        return  this.$store.getters.getOrdersMeta
+    }),
+    selectedOrders:(function(){
+      return this.$store.getters.getSelectedOrders;
     })
   },
   created() {
@@ -131,7 +134,6 @@ export default {
       }).bind(this))
     },
     downloadReciept:(function(order){
-      alert(JSON.stringify(order))
 
     }),
     isChecked:(function(orderID){
@@ -147,7 +149,24 @@ export default {
         }
         this.$store.commit("removeSelectedOrder", id)
       }
-    }
+    },
+    disabledDeleteButton:(function(){
+      if(this.selectedOrders){
+        return !(this.selectedOrders.length > 0)
+      }
+      return true;
+    }),
+    disableModifiedSelectedOrder:(function(){
+       if(this.selectedOrders){
+         // Can only modified one item at a time.
+         return !(this.selectedOrders.length == 1)
+       }
+       return true;
+    }),
+    createUserOrderFromAdmin:(function(){
+      //Ability to create an order for a user
+      alert("The API to this Creation Process Not Implemented Yet.")
+    })
   } 
 }
 </script>

@@ -16,6 +16,7 @@ import getTruckFromServer from "./getTruckFromServer"
 import {pollTrackerDataFromServer}  from "./pollTrackerDataFromServer"
 import toggleManagerActivation from "./toggleManagerActivation"
 import {getAllOrders} from "./orders/getAllOrders"
+import getOrderDetail from "./orders/getOrderDetails"
 
 const actions = {
   // /////////////////////////////////////////////
@@ -73,7 +74,8 @@ const actions = {
   getTruckFromServer,
   pollTrackerDataFromServer,
   toggleManagerActivation,
-  getAllOrders
+  getAllOrders,
+  getOrderDetail
 };
 
 export default actions;

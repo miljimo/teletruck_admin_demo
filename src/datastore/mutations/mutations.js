@@ -22,6 +22,7 @@ import  {updateManagers, updateManagersMetadata}  from "./updateManagers"
 import {createErrors, clearErrors} from "./createErrors"
 import updateManagerStatus from "./updateManagerStatus"
 import updateOrders from "./orders/updateOrders"
+import {updateSelectedOrder} from "./orders/updateSelectedOrder"
 
 
 
@@ -110,7 +111,8 @@ const mutations = {
   //Orders
   updateOrders,
   selectedOrder,
-  removeSelectedOrder
+  removeSelectedOrder,
+  updateSelectedOrder
  
 };
 

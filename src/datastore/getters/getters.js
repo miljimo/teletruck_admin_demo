@@ -9,6 +9,7 @@ import getReport from "./get_report"
 import { getAllTrucks, getAllTrucksMeta,getCurrentTruck, getTruckMeta} from "./get_all_trucks"
 import {getManagers, getManagersMetadata} from "./get_managers"
 import {getOrders,getOrdersMeta} from "./orders"
+import state from "../states/state";
 
 
 const stopTrackerPolling=(function(state){
@@ -37,8 +38,18 @@ const getOrderSelectionStatus = (function(state){
   return  getOrderStatus;
 })
 
+const getSelectedOrders=(function(state){
+  return state.selectedOrders;
+})
+
+const getSelectedOrder = (function(state){
+   return state.selectedOrder
+})
+
 
 const getters = {
+  getSelectedOrders,
+  getSelectedOrder,
   windowBreakPoint: windowBreakPoint,
   scrollbarTag:getScrollBarTag,
   isLoggedIn: (state) => !!state.token,

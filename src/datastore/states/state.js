@@ -161,6 +161,7 @@ stop_tracker_polling:false,
 errors:[],
 orders:[],
 selectedOrders:[],
+selectedOrder:{id:0,},
 ordersMeta :{current_page:0}
 };
 
