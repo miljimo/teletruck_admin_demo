@@ -134,12 +134,18 @@
                           <div class="col-md-9">
                               <strong>Shipping Address:</strong> {{order.order.shipping_address}}
                           </div>
-                          <div class="col-md-3" v-if="order.truck_id!=null">
-                              <vs-button 
+                          <div class="col-md-3" >
+                              <vs-button v-if="order.truck_id != null"
                               :to="`/truck/${order.truck_id}`"
                               class="font-bold"
                               >Track Truck</vs-button>
+                            <label v-else>
+                                <strong class="no-truck-attached">No Truck Attached</strong>
+                            </label>
+
                           </div>
+
+
                       </div>
 
                       <!--Display order items , at the moment only images are provided-->
@@ -243,6 +249,12 @@ export default {
 
 .order-column-detail span{
     float:right;
+}
+
+.no-truck-attached{
+    color:#ff9e3d;
+    font-size:12px;
+    font-style:italic;
 }
 
 </style>
