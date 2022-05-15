@@ -4,9 +4,16 @@
       <vs-card>
         <div class="p-2">
           <div class="mb-4">
-            <p class="font-bold lead">All</p>
+           
+            <p class="font-bold lead">Orders ({{orders.length}})</p>
+             <div class="container button-panel">
+              <ul>
+                <li> <input type="button" value="Create" /></li>
+                <li>  <input type="button" value="Delete" /></li>
+                <li>  <input type="button" value="Modified" /></li>
+              </ul>
+            </div>
           </div>
-
           <vs-table
             id="div-with-loading"
             max-items="10"
@@ -14,17 +21,24 @@
             search
           >
             <template slot="thead">
+              <vs-th> S/N </vs-th>
               <vs-th> Created </vs-th>
               <vs-th> Order ID </vs-th>
               <vs-th> Material </vs-th>
               <vs-th> Creator </vs-th>
               <vs-th>Total Amount</vs-th>
               <vs-th> Order Status</vs-th>
-              <vs-th> Action(s) </vs-th>
+              <vs-th> </vs-th>
             </template>
 
             <template slot-scope="{ data }">
-              <vs-tr :key="i" v-for="(tr, i) in data">
+              <vs-tr :key="i" v-for="(tr, i) in data" class="table-row-container">
+              <vs-td>
+                  <div class="select-order-container">
+                      <label>{{i+1}}</label>
+                      <input type="checkbox" :value="data[i].id"/>
+                  </div>
+              </vs-td>
                 <vs-td :data="data[i].id">
                   {{
                     moment
@@ -33,7 +47,7 @@
                   }}
                 </vs-td>
                 <vs-td :data="data[i].order_number">
-                  <span class="font-bold text-primary">
+                  <span class="font-bold">
                     {{ data[i].order_number }}</span
                   >
                 </vs-td>
@@ -58,14 +72,13 @@
                 </vs-td >
 
                 <vs-td>               
-                  <label>{{data[i].order_status_text}}</label>
+                  <label>{{upperCase(data[i].order_status_text)}}</label>
                 </vs-td >
                 <vs-td>
-                    <vs-button
-                    :to="`orders/${data[i].id}`"
-                    size="small"
-                    class="mr-2 mb-2"
-                    >>></vs-button>
+                      <vs-button
+                      :to="`order/${data[i].id}`"
+                      size="small"
+                      class="mr-2 mb-2">>></vs-button>
                 </vs-td>
               </vs-tr>
             </template>
@@ -92,101 +105,83 @@ export default {
        return  this.$store.getters.getOrdersMeta
     })
   },
-  mounted() {
+  created() {
     this.loadAllOrders()
   },
-  data() {
-    return {
-      categories: [],
-      trucktype: "",
-      addData: false,
-      table_options: {
-        current_page: 1,
-      },
-      delAct: "",
-      name: "",
-      size: "",
-      description: "",
-      price: "",
-      images: [],
-      category_id: "",
-      previewPop: false,
-      viewPreview: {},
-    };
-  },
-  watch: {
-    "table_options.current_page": function () {
-    },
-  },
   methods: {
-    openOrderPage(orderID) {
-      
-    },
+    upperCase:(function(letters){
+     if(typeof letters == 'string'){
+        return letters.toUpperCase();
+     }
+     return letters
+    }),
     loadAllOrders() {
-      this.$store.dispatch("getAllOrders", this.table_options.current_page).then((function(resp){
+      this.$store.dispatch("getAllOrders", this.orderMeta.current_page).then((function(resp){
      
       }).bind(this))
     },
-    addImages(event) {
-      // console.log(event.target.files);
-      // this.images = event.target.files;
-      for (var i = 0; i < event.target.files.length; ++i) {
-        this.images.push(event.target.files[i]);
-      }
-    },
-    submitForm() {
-      this.$vs.loading();
-      let data = new FormData();
-      data.append("name", this.name);
-      data.append("description", this.description);
-      data.append("category_id", this.category_id);
-      // data.append("images[]", this.images);
-      for (let i = 0; i < this.images.length; i++) {
-        data.append("images[]", this.images[i]);
-      }
+    downloadReciept:(function(order){
+      alert(JSON.stringify(order))
 
-      let apiData = {
-        path: "admin/materials",
-        data,
-      };
-      this.$store
-        .dispatch("create", apiData)
-        .then((resp) => {
-          this.$vs.loading.close();
-
-          this.$vs.notify({
-            title: "Create Material",
-            text: "Successfully created new material",
-            color: "success",
-            icon: "verified_user",
-            position: "bottom-center",
-          });
-
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
-        })
-        .catch((err) => {
-          this.$vs.loading.close();
-          if (err.response) {
-            this.$vs.notify({
-              title: "Create Material",
-              text: err.response.data.message,
-              color: "warning",
-              icon: "error",
-              position: "bottom-center",
-            });
-          } else {
-            this.$vs.notify({
-              title: "Create Material",
-              text: "Unable to Create Material",
-              color: "dark",
-              icon: "error",
-              position: "bottom-center",
-            });
-          }
-        });
-    },
-  },
-};
+    }).bind(this)
+  } 
+}
 </script>
+
+<style scoped>
+.button-panel{
+  background-color: transparent;
+  border-radius: 5px;
+  padding:10px;
+  margin-bottom: 50px;
+  overflow: hidden;
+}
+
+.button-panel ul{
+  padding:0px;
+  margin:0px;
+  float:right
+}
+
+.button-panel ul li{
+  float:left;
+  margin-right:10px;
+  font-size:10px;
+  cursor:pointer;
+
+}
+
+.button-panel ul li input[type='button']{
+  padding:5px;
+  background-color: #e6cc4c;
+  border-radius: 5px;
+  cursor:pointer;
+  min-width:100px;
+  box-shadow: 1px 1px 3px  #000;
+  font-size:10px;
+  border-width:0px;
+}
+
+.button-panel ul li input[type='button']:hover{
+  background-color: #f2b226;
+  font-size:12px;
+}
+
+.select-order-container{
+  background-color:transparent !important;
+  padding:0px;
+  display:block;
+  float:right;
+}
+
+.select-order-container input[type="checkbox"]{
+  width:50px;
+  height:20px;
+}
+.table-row-container:hover{
+ background-color: #fff0e0;
+ cursor:pointer;
+}
+
+
+</style>
