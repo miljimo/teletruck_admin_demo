@@ -5,7 +5,7 @@ const TIMEOUT_IN_MS = 1024
 const pollTrackerDataFromServer = (function (context, trackID) {
 
     let data = {
-        path: `admin/trucks/tracker/get/${trackID}`
+        path: `tracker/get/${trackID}`
     }
     httpGet(context, data).then((resp) => {
         let success = resp.data.status
