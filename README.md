@@ -1,29 +1,55 @@
-# teletruck-admin
+# Teletruck Administrator Panel
+**Content**
+- [Overview](#Overview)
+- [Development Environment Setup](#DevEnvironment)
+    - [Tool Installation](#ToolInstallation)
+        - [Installing Node Version Manager](#NodeVersionManager)
+    - [Install Application Dependencies](#ApplicationDependencies)
+- [Features Documentation](#FeatureDocumentation)
+- [Issues Manager](#IssueManager)
+---
 
-This template should help get you started developing with Vue 3 in Vite.
+## Overview
+Teletruck Administrator Panel Control is a Vue-cli single page application (SPA) that communicate with a server side user facing API.
 
-## Recommended IDE Setup
+## Development Environment Setup
+The following tools are need to compile the vue application for the teletruck panel.
+-  Node Version Manager 
+-  Node Version 10.19.0
+-  Node Package Manager(npm) v6.14.4
+-  Git (Source Control)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+### Tool Installation
+ *TODO*
 
-## Customize configuration
+####  Node Version Manager Installtion
+- Window Installation
+- Linux Installation
+- Mac Installation
+#### Git Installation
+- Window Installation
+- Linux Installation
+- Mac Installation
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+### Install Application Dependencies
+1) Navigate to the project directory and run the command.
+```bash
+   npm install
 ```
+2) Run the application locally , make sure that the installation is completed successful.
+ Then run 
+ ```bash
+     npm run serve
+ ```
 
-### Compile and Hot-Reload for Development
+ 3) To Deploy a production static application to the server, run the below command to build.
+ ```bash
+  npm run build
+ ```
 
-```sh
-npm run dev
-```
+## Issues Managers
+ [TODO]
 
-### Compile and Minify for Production
+ --- 
 
-```sh
-npm run build
-```
+
